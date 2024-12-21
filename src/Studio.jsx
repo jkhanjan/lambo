@@ -20,6 +20,7 @@ const Studio = () => {
         enableZoom={false}
         rotateSpeed={0.5}
       />
+      
 
       {/* Environment Map */}
       <Environment files="/snow.hdr" background blur={0} background intensity={1} />

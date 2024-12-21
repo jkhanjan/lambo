@@ -1,6 +1,12 @@
 import React, { useState, Suspense, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Loader, OrbitControls, Preload, Text3D } from "@react-three/drei";
+import {
+  Environment,
+  Loader,
+  OrbitControls,
+  Preload,
+  Text3D,
+} from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
 import Studio from "./Studio";
@@ -56,6 +62,7 @@ const ResponsiveCamera = () => {
 
 const App = () => {
   const [activeModel, setActiveModel] = useState("Model1");
+  const [opacity, setOpacity] = useState(1);
   const [cameraView, setCameraView] = useState("default");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -74,6 +81,16 @@ const App = () => {
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 1000);
   };
+
+  useEffect(() => {
+    if (activeModel !== activeModel) {
+      setOpacity(0); // Fade out current model
+      setTimeout(() => {
+        setActiveModel(activeModel);
+        setOpacity(1); // Fade in the new model
+      }, 500); // Duration of fade out
+    }
+  }, [activeModel, activeModel]);
 
   return (
     <>
@@ -131,10 +148,12 @@ const App = () => {
           <Canvas className="canvas" shadows>
             <ResponsiveCamera />
             <Studio />
-            {activeModel === "Model1" && <Lambo />}
-            {activeModel === "Model2" && <Ferrari />}
-            {activeModel === "Model3" && <Porshe />}
-            {activeModel === "Model4" && <BMW />}
+            <mesh opacity={opacity} transition="opacity 0.5s">
+              {activeModel === "Model1" && <Lambo />}
+              {activeModel === "Model2" && <Ferrari />}
+              {activeModel === "Model3" && <Porshe />}
+              {activeModel === "Model4" && <BMW />}
+            </mesh>
             <Floor />
             <Effects />
             <CameraController
@@ -152,7 +171,6 @@ const App = () => {
             />
             <Preload all />
             {/* <Text3D/> */}
-            
           </Canvas>
         </ColorProvider>
       </Suspense>
