@@ -1,0 +1,11 @@
+Model Information:
+* title:	BMW M8 Competition Widebody
+* source:	https://sketchfab.com/3d-models/bmw-m8-competition-widebody-026f3f65371b428fb49b5d0e0029eaf6
+* author:	blakebella (https://sketchfab.com/blake2theback)
+
+Model License:
+* license type:	CC-BY-NC-ND-4.0 (http://creativecommons.org/licenses/by-nc-nd/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions can not be distributed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "BMW M8 Competition Widebody" (https://sketchfab.com/3d-models/bmw-m8-competition-widebody-026f3f65371b428fb49b5d0e0029eaf6) by blakebella (https://sketchfab.com/blake2theback) licensed under CC-BY-NC-ND-4.0 (http://creativecommons.org/licenses/by-nc-nd/4.0/)
