@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
 import { useColor } from "./states/ColorContext";
-import { Bloom, LensFlare } from "@react-three/postprocessing";
+import { Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 export default function Lambo(props) {
   const { nodes, materials } = useGLTF("/model2/scene.gltf");

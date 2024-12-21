@@ -1,7 +1,4 @@
 import { Environment, OrbitControls } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
-import { Bloom, EffectComposer, Glitch } from "@react-three/postprocessing";
-import React from "react";
 
 const Studio = () => {
   return (
@@ -20,10 +17,14 @@ const Studio = () => {
         enableZoom={false}
         rotateSpeed={0.5}
       />
-      
 
       {/* Environment Map */}
-      <Environment files="/snow.hdr" background blur={0} background intensity={1} />
+      <Environment
+        files="/snow.hdr"
+        background
+        blur={0}
+        intensity={1}
+      />
       <fogExp2 attach="fog" color="#b0cfde" density={0.03} />
     </>
   );

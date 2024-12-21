@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { MeshReflectorMaterial, useGLTF } from "@react-three/drei";
+import {  useGLTF } from "@react-three/drei";
 import { useColor } from "./states/ColorContext";
 import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
 import { Bloom } from "@react-three/postprocessing";

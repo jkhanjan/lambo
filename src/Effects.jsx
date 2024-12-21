@@ -8,7 +8,6 @@ import {
   Glitch,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
-import * as THREE from "three";
 
 const FloatingParticles = () => {
   const pointsRef = useRef();
