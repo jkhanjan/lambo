@@ -1,13 +1,12 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useColor } from "./states/ColorContext";
-import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
+import useAppStore from "../../stores/useAppStore";
+import MeshTransitionMaterial from "../../meshTransition/MeshTransitionMaterial";
 import { Bloom } from "@react-three/postprocessing";
 
 export default function Porshe(props) {
   const { nodes, materials } = useGLTF("/porshe/scene.gltf");
-
-  const { selectedColor } = useColor();
+  const selectedColor = useAppStore((state) => state.selectedColor);
   return (
     <group {...props} dispose={null}>
       <group position={[0.193, 0, -0.477]} scale={2.995}>

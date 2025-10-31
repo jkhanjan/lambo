@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
-import {  useGLTF } from "@react-three/drei";
-import { useColor } from "./states/ColorContext";
-import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
+import { useGLTF } from "@react-three/drei";
+import useAppStore from "../../stores/useAppStore";
+import MeshTransitionMaterial from "../../meshTransition/MeshTransitionMaterial";
 import { Bloom } from "@react-three/postprocessing";
 
 export default function Ferrari(props) {
   const group = useRef();
   const { nodes, materials } = useGLTF("/model/scene.gltf");
-  const { selectedColor } = useColor();
+  const selectedColor = useAppStore((state) => state.selectedColor);
   return (
     <group {...props} dispose={null}>
       <group scale={0.0115} position={[0, 0, -1.3]}>

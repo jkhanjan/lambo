@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
-import { useColor } from "./states/ColorContext";
+import MeshTransitionMaterial from "../../meshTransition/MeshTransitionMaterial";
+import useAppStore from "../../stores/useAppStore";
 import { Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
+
 export default function Lambo(props) {
   const { nodes, materials } = useGLTF("/model2/scene.gltf");
-  const { selectedColor } = useColor();
+  const selectedColor = useAppStore((state) => state.selectedColor);
   return (
     <group {...props} dispose={null}>
       <group rotation={[Math.PI / 2, 0, 0]}>
