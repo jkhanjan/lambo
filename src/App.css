@@ -1,0 +1,23 @@
+.button {
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #b0cfde;
+  color: #b0cfde;
+  font-family: "Arial", sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #b0cfde, inset 0 0 10px #b0cfde;
+  text-shadow: 0 0 5px #b0cfde;
+  max-width: 90%;
+}
+
+.button:hover {
+  background: rgba(0, 255, 255, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #b0cfde, inset 0 0 20px #b0cfde;
+}

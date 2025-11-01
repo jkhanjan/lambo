@@ -1,7 +1,6 @@
-import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import MeshTransitionMaterial from "./meshTransition/MeshTransitionMaterial";
-import { useColor } from "./states/ColorContext";
+import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
+import { useColor } from "../states/ColorContext";
 import { Bloom } from "@react-three/postprocessing";
 
 export default function BMW(props) {

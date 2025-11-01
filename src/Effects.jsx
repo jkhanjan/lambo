@@ -90,7 +90,6 @@ const Effects = () => {
           mipmapBlur
           layers={[1]} // Apply bloom only to layer 1
         />
-        {/* Chromatic Aberration for subtle optical effect */}
         <ChromaticAberration offset={[0.001, 0.002]} />
       </EffectComposer>
     </>
