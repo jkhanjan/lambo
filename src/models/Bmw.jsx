@@ -4,7 +4,7 @@ import { useColor } from "../states/ColorContext";
 import { Bloom } from "@react-three/postprocessing";
 
 export default function BMW(props) {
-  const { nodes, materials } = useGLTF("/bmw/scene.gltf");
+  const { nodes, materials } = useGLTF("/bmw/scene-resized.glb", true);
   const { selectedColor } = useColor();
   return (
     <group {...props} dispose={null}>
@@ -425,4 +425,4 @@ export default function BMW(props) {
   );
 }
 
-useGLTF.preload("/bmw/scene.gltf");
+useGLTF.preload("/bmw/scene-resized.glb");

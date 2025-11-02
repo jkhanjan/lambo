@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useReducer, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import CameraController from "./functionality/CameraController.jsx";
 import ResponsiveCamera from "./functionality/ResponsiveCamera.jsx";
@@ -9,16 +9,16 @@ import Floor from "./Floor";
 import Effects from "./Effects";
 import Overlay from "./Overlay.jsx";
 import ColorProvider from "./states/ColorContext.jsx";
-import Lambo from "./models/Lambo.jsx";
-import BMW from "./models/Bmw.jsx";
-import Ferrari from "./models/Ferrari.jsx";
-import Porshe from "./models/Porshe.jsx";
+import { carReducer, initialCarState } from "./reducer/CarReducer.jsx";
+import PreloadCars from "./functionality/PreLoadAll.jsx";
+import LoadTracker from "./functionality/Loader.jsx";
 
 const App = () => {
-  const [activeModel, setActiveModel] = useState("Model1");
+  const [carState, dispatch] = useReducer(carReducer, initialCarState);
   const [opacity, setOpacity] = useState(1);
   const [cameraView, setCameraView] = useState("default");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [firstModelLoaded, setFirstModelLoaded] = useState(false);
 
   const views = ["default", "sideView", "topView", "backView"];
   const viewNames = {
@@ -36,30 +36,17 @@ const App = () => {
     setTimeout(() => setIsTransitioning(false), 1000);
   };
 
-  useEffect(() => {
-    if (!activeModel) {
-      setOpacity(0);
-      setTimeout(() => {
-        setActiveModel(activeModel);
-        setOpacity(1);
-      }, 500);
-    }
-  }, [activeModel]);
+  const handleModelChange = (modelName) => {
+    setOpacity(0);
+    setTimeout(() => {
+      dispatch({ type: "SET_MODEL", model: modelName });
+      setOpacity(1);
+    }, 500);
+  };
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 10,
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
+      <div className="button-overlay">
         <button onClick={handleCameraViewChange} className="button">
           {viewNames[cameraView]}
         </button>
@@ -67,16 +54,11 @@ const App = () => {
 
       <Suspense fallback={<Loader />}>
         <ColorProvider>
-          <Overlay setActiveModel={setActiveModel} />
+          <Overlay setActiveModel={handleModelChange} />
           <Canvas className="canvas" shadows>
             <ResponsiveCamera />
             <Studio />
-            <mesh opacity={opacity}>
-              {activeModel === "Model1" && <Lambo />}
-              {activeModel === "Model2" && <Ferrari />}
-              {activeModel === "Model3" && <Porshe />}
-              {activeModel === "Model4" && <BMW />}
-            </mesh>
+            <mesh opacity={opacity}>{carState.model}</mesh>
             <Floor />
             <Effects />
             <CameraController
@@ -94,6 +76,15 @@ const App = () => {
             />
             <Preload all />
           </Canvas>
+          {carState.name === "Model1" && !firstModelLoaded && (
+            <LoadTracker
+              onComplete={() => {
+                setFirstModelLoaded(true);
+                console.log("First model loaded, starting background preload");
+              }}
+            />
+          )}
+          {firstModelLoaded && <PreloadCars />}
         </ColorProvider>
       </Suspense>
     </>

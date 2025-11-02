@@ -5,7 +5,7 @@ import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
 import { Bloom } from "@react-three/postprocessing";
 
 export default function Porshe(props) {
-  const { nodes, materials } = useGLTF("/porshe/scene.gltf");
+  const { nodes, materials } = useGLTF("/porshe/scene-draco.glb", true);
 
   const { selectedColor } = useColor();
   return (
@@ -1347,4 +1347,4 @@ export default function Porshe(props) {
   );
 }
 
-useGLTF.preload("/porshe/scene.gltf");
+useGLTF.preload("/porshe/scene-draco.glb");

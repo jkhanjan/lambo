@@ -6,7 +6,7 @@ import { Bloom } from "@react-three/postprocessing";
 
 export default function Ferrari(props) {
   const group = useRef();
-  const { nodes, materials } = useGLTF("/model/scene.gltf");
+  const { nodes, materials } = useGLTF("/model/scene-draco.glb", true);
   const { selectedColor } = useColor();
   return (
     <group {...props} dispose={null}>
@@ -492,4 +492,4 @@ export default function Ferrari(props) {
   );
 }
 
-useGLTF.preload("/model/scene.gltf");
+useGLTF.preload("/model/scene-draco.glb");

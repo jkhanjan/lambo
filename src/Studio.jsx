@@ -19,12 +19,7 @@ const Studio = () => {
       />
 
       {/* Environment Map */}
-      <Environment
-        files="/snow.hdr"
-        background
-        blur={0}
-        intensity={1}
-      />
+      <Environment files="/snow.hdr" background blur={0} intensity={1} />
       <fogExp2 attach="fog" color="#b0cfde" density={0.03} />
     </>
   );

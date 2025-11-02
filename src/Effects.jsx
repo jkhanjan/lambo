@@ -44,7 +44,7 @@ const FloatingParticles = () => {
           uniform float uTime;
           void main() {
             vec3 pos = position;
-            pos.y += sin(uTime + pos.x) * 0.5; // Floating effect
+            pos.y += sin(uTime + pos.x) * 0.5;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
             gl_PointSize = 2.0;
           }

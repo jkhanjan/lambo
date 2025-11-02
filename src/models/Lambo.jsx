@@ -5,7 +5,7 @@ import * as THREE from "three";
 import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
 import { useColor } from "../states/ColorContext";
 export default function Lambo(props) {
-  const { nodes, materials } = useGLTF("/model2/scene.gltf");
+  const { nodes, materials } = useGLTF("/model2/scene-draco.glb", true);
   const { selectedColor } = useColor();
   return (
     <group {...props} dispose={null}>
@@ -833,4 +833,4 @@ export default function Lambo(props) {
   );
 }
 
-useGLTF.preload("/model2/scene.gltf");
+useGLTF.preload("/model2/scene-draco.glb");
