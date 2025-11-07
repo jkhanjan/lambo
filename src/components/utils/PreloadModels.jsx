@@ -1,21 +1,16 @@
+
 import { useGLTF } from "@react-three/drei";
 
-export const preloadModels = async () => {
-  const start = performance.now();
-
-  console.log("⏳ Starting preload...");
-  await Promise.all([
-    import("../models/Lambo").then(() => useGLTF.preload("/lambo/scene.gltf")),
-    import("../models/Porshe").then(() =>
-      useGLTF.preload("/porsche/scene.gltf")
-    ),
-    import("../models/Ferrari").then(() =>
-      useGLTF.preload("/ferrari/scene.gltf")
-    ),
-    import("../models/BMW").then(() => useGLTF.preload("/bmw/scene.gltf")),
-    import("../models/Fire").then(() => useGLTF.preload("/fire/scene.gltf")),
-  ]);
-
-  const end = performance.now();
-  console.log(`✅ Preload complete in ${(end - start).toFixed(2)} ms`);
+export const preloadModels = () => {
+  import("../models/Lambo").then(() =>
+    useGLTF.preload("/model/scene-draco.glb")
+  );
+  import("../models/Porsche").then(() =>
+    useGLTF.preload("/porsche/scene-draco.glb")
+  );
+  import("../models/Ferrari").then(() =>
+    useGLTF.preload("/model2/scene-draco.glb")
+  );
+  import("../models/Bmw").then(() => useGLTF.preload("/bmw/scene-resized.glb"));
+  import("../models/Fire").then(() => useGLTF.preload("/fire/scene.gltf"));
 };
