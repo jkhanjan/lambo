@@ -5,7 +5,7 @@ export const preloadModels = () => {
   import("../models/Lambo").then(() =>
     useGLTF.preload("/model/scene-draco.glb")
   );
-  import("../models/Porsche").then(() =>
+  import("../models/Porshe").then(() =>
     useGLTF.preload("/porsche/scene-draco.glb")
   );
   import("../models/Ferrari").then(() =>
