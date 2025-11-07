@@ -1,161 +1,95 @@
-import React, { useState, Suspense, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  Environment,
-  Loader,
-  OrbitControls,
-  Preload,
-  Text3D,
-} from "@react-three/drei";
-import * as THREE from "three";
+import React, { useState, Suspense, useReducer, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import ResponsiveCamera from "./components/utils/ResponsiveCamera.jsx";
+import CameraController from "./components/utils/CameraController.jsx";
+import { Loader, OrbitControls, Preload } from "@react-three/drei";
 import "./App.css";
-import Studio from "./Studio";
-import Floor from "./Floor";
-import Effects from "./Effects";
-import Overlay from "./Overlay.jsx";
-import ColorProvider from "./states/ColorContext.jsx";
-import Ferrari from "./Ferrari";
-import Lambo from "./Lambo.jsx";
-import BMW from "./Bmw.jsx";
-import Porshe from "./Porshe.jsx";
-
-const CameraController = ({ view, isTransitioning }) => {
-  const { camera } = useThree();
-  const cameraViews = {
-    default: { position: [0, 5, 25], target: [0, 0, 0] },
-    sideView: { position: [7, 1, 0], target: [0, 0, 0] },
-    topView: { position: [0, 12, 0], target: [0, 0, 0] },
-    backView: { position: [0, -2, -16], target: [0, 0, 0] },
-  };
-
-  useFrame(() => {
-    if (isTransitioning) {
-      const currentView = cameraViews[view] || cameraViews["default"];
-      camera.position.lerp(new THREE.Vector3(...currentView.position), 0.03);
-      const target = new THREE.Vector3(...currentView.target);
-      camera.lookAt(target);
-    }
-  });
-
-  return null;
-};
-
-const ResponsiveCamera = () => {
-  const { camera, size } = useThree();
-
-  useEffect(() => {
-    if (size.width < 768) {
-      camera.position.set(0, 5, 15);
-      camera.fov = 50;
-    } else if (size.width < 1200) {
-      camera.position.set(0, 5, 20);
-      camera.fov = 45;
-    } else {
-      camera.position.set(0, 5, 25);
-      camera.fov = 30;
-    }
-    camera.updateProjectionMatrix();
-  }, [camera, size]);
-
-  return null;
-};
+import Studio from "./components/Effects/Studio.jsx";
+import Floor from "./components/Effects/Floor.jsx";
+import Effects from "./components/Effects/Effects.jsx";
+import Overlay from "./components/UI/Overlay.jsx";
+import {
+  carReducer,
+  initialCarState,
+} from "./components/reducer/CarReducer.jsx";
+import {
+  MODEL_MAP,
+  VIEW_NAMES,
+  VIEWS,
+} from "./components/constants/constanst.js";
+import { preloadModels } from "./components/utils/PreloadModels.jsx";
 
 const App = () => {
-  const [activeModel, setActiveModel] = useState("Model1");
-  const [opacity, setOpacity] = useState(1);
+  const [carState, dispatch] = useReducer(carReducer, initialCarState);
   const [cameraView, setCameraView] = useState("default");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const views = ["default", "sideView", "topView", "backView"];
-  const viewNames = {
-    default: "Default View",
-    sideView: "Side View",
-    topView: "Top View",
-    backView: "Back View",
-  };
+  const CurrentModel = MODEL_MAP[carState.modelName];
+  useEffect(() => {
+    preloadModels();
+  },[])
 
   const handleCameraViewChange = () => {
-    const currentIndex = views.indexOf(cameraView);
-    const nextIndex = (currentIndex + 1) % views.length;
-    setCameraView(views[nextIndex]);
+    const currentIndex = VIEWS.indexOf(cameraView);
+    const nextIndex = (currentIndex + 1) % VIEWS.length;
+    setCameraView(VIEWS[nextIndex]);
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 1000);
   };
 
-  useEffect(() => {
-    if (activeModel !== activeModel) {
-      setOpacity(0); // Fade out current model
-      setTimeout(() => {
-        setActiveModel(activeModel);
-        setOpacity(1); // Fade in the new model
-      }, 500); // Duration of fade out
-    }
-  }, [activeModel, activeModel]);
+  const handleModelChange = (modelName) => {
+    setTimeout(() => {
+      dispatch({ type: "SET_MODEL", modelName });
+    }, 500);
+  };
+
+  const handleModelColorChange = (color) => {
+    dispatch({ type: "SET_COLOR", color });
+  };
+
+  const handleTextureChange = ({ metalness, roughness }) => {
+    dispatch({ type: "SET_MATERIAL", metalness, roughness });
+  };
+
+  const handleEnvironmentChange = (environment) => {
+    dispatch({ type: "SET_ENVIRONMENT", environment });
+  };
+
+  const handlePartsChange = (parts) => {
+    dispatch({ type: "TOGGLE_PART", partName: parts });
+  };
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 10,
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        <button
-          onClick={handleCameraViewChange}
-          style={{
-            padding: "8px 20px",
-            background: "rgba(0, 0, 0, 0.7)",
-            border: "1px solid #b0cfde",
-            color: "#b0cfde",
-            fontFamily: "'Arial', sans-serif",
-            fontSize: "15px",
-            fontWeight: "bold",
-            textTransform: "uppercase",
-            letterSpacing: "1px",
-            clipPath: "polygon(10% 0, 100% 0, 90% 100%, 0 100%)",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            boxShadow: "0 0 10px #b0cfde, inset 0 0 10px #b0cfde",
-            textShadow: "0 0 5px #b0cfde",
-            maxWidth: "90%",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = "rgba(0, 255, 255, 0.1)";
-            e.target.style.transform = "scale(1.05)";
-            e.target.style.boxShadow =
-              "0 0 20px #b0cfde, inset 0 0 20px #b0cfde";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = "rgba(0, 0, 0, 0.7)";
-            e.target.style.transform = "scale(1)";
-            e.target.style.boxShadow =
-              "0 0 10px #b0cfde, inset 0 0 10px #b0cfde";
-          }}
-        >
-          {viewNames[cameraView]}
-        </button>
-      </div>
+      <div className="app">
+        <Suspense fallback={<Loader />}>
+          <Overlay
+            environment={carState.environment}
+            setActiveModel={handleModelChange}
+            setActiveColor={handleModelColorChange}
+            setActiveTexture={handleTextureChange}
+            setActiveEnvironment={handleEnvironmentChange}
+            setActiveParts={handlePartsChange}
+            carState={carState}
+          />
 
-      <Suspense fallback={<Loader />}>
-        <ColorProvider>
-          <Overlay setActiveModel={setActiveModel} />
+          <div className="button-overlay">
+            <button onClick={handleCameraViewChange} className="button">
+              {VIEW_NAMES[cameraView]}
+            </button>
+          </div>
           <Canvas className="canvas" shadows>
             <ResponsiveCamera />
-            <Studio />
-            <mesh opacity={opacity} transition="opacity 0.5s">
-              {activeModel === "Model1" && <Lambo />}
-              {activeModel === "Model2" && <Ferrari />}
-              {activeModel === "Model3" && <Porshe />}
-              {activeModel === "Model4" && <BMW />}
-            </mesh>
-            <Floor />
-            <Effects />
+            <Studio environment={carState.environment} />
+            <CurrentModel
+              color={carState.color}
+              metalness={carState.metalness}
+              roughness={carState.roughness}
+              parts={carState.parts}
+              accessories={carState.accessories}
+            />
+            <Floor environment={carState.environment} />
+            <Effects environment={carState.environment} />
             <CameraController
               view={cameraView}
               isTransitioning={isTransitioning}
@@ -170,10 +104,9 @@ const App = () => {
               enabled={!isTransitioning}
             />
             <Preload all />
-            {/* <Text3D/> */}
           </Canvas>
-        </ColorProvider>
-      </Suspense>
+        </Suspense>
+      </div>
     </>
   );
 };

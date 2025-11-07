@@ -1,0 +1,887 @@
+import { Decal, useGLTF } from "@react-three/drei";
+import { Bloom, EffectComposer, LensFlare } from "@react-three/postprocessing";
+import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import Fire from "./Fire";
+
+export default function Lambo(props) {
+  console.log('loading')
+
+  const lightref = useRef();
+  const lightref1 = useRef();
+
+  const spoilers = props.parts.spoiler;
+  const headlights = props.parts.headlights;
+
+  const { nodes, materials } = useGLTF("/model2/scene-draco.glb", true);
+  const { nodes: spoilerNodes, materials: spoilerMaterials } = useGLTF(
+    "./spoiler/spoilers/scene.gltf"
+  );
+
+  useFrame(() => {
+    if (!lightref.current || !lightref1.current) return;
+
+    const target = headlights ? 23 : 1; // desired intensity
+    const target1 = headlights ? 33 : 2; // desired intensity
+    const current = lightref.current.emissiveIntensity;
+    const current1 = lightref1.current.emissiveIntensity;
+
+    const speed = 0.1;
+    lightref.current.emissiveIntensity += (target - current) * speed;
+    lightref1.current.emissiveIntensity += (target1 - current1) * speed;
+  });
+
+  return (
+    <group {...props} dispose={null}>
+      <group rotation={[Math.PI / 2, 0, 0]}>
+        <group rotation={[-Math.PI, 0, 0]} scale={0.01}>
+          {spoilers && (
+            <group scale={0.6}>
+              <mesh
+                castShadow
+                receiveShadow
+                geometry={spoilerNodes.modSpoiler__0.geometry}
+                material={spoilerMaterials["Scene_-_Root"]}
+                position={[0, 266, 115]}
+                rotation={[Math.PI / 2, 0, 0]}
+              >
+                <meshStandardMaterial
+                  color="#484242"
+                  metalness={1.0}
+                  roughness={1.1}
+                  envMapIntensity={1}
+                />
+              </mesh>
+            </group>
+          )}
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Daylight_Part_Carbon_0.geometry}
+              material={materials.Carbon}
+            >
+              <MeshTransitionMaterial intensity={0.1} radius={1.5} />
+            </mesh>
+
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Daylight_Part_Inside_Headlight_0.geometry}
+              material={materials.Inside_Headlight}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Tail_light_Taillight_glass_0.geometry}
+              material={materials.Taillight_glass}
+            >
+              {" "}
+              <meshStandardMaterial
+                color={"#ff0000"}
+                metalness={0.1}
+                roughness={1}
+                emissive={"#b40606"}
+                emissiveIntensity={105}
+              />
+              <Bloom
+                intensity={10}
+                luminanceThreshold={1.1} // Reacts to moderately bright areas
+                luminanceSmoothing={10.1} // Smooth glow
+                mipmapBlur
+                radius={10}
+              />
+            </mesh>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Tail_light_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Tail_light_Tail_light_0.geometry}
+              material={materials.Tail_light}
+            ></mesh>
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Exhaust_1_Exhaust_0.geometry}
+              material={materials.Exhaust}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Exhaust_1_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Rear_engine_carbon_Carbon_0.geometry}
+              material={materials.Carbon}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Rear_engine_carbon_Vents_0.geometry}
+              material={materials.Vents}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_9_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_9_Sphere_0.geometry}
+              material={materials.Sphere}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_8001_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_8001_Sphere_0.geometry}
+              material={materials.Sphere}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_1_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Front_part_1_Metal_0.geometry}
+              material={materials.Metal}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Headlight_Headlight_0.geometry}
+              material={materials.Headlight}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Headlight_Headlight_ligh_second_0.geometry}
+              material={materials.Headlight_ligh_second}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Headlight_Headlight_light_0.geometry}
+              material={materials.Headlight_light}
+            >
+              <meshStandardMaterial
+                ref={lightref}
+                color={"#ffffff"}
+                emissive={"#b0b2ff"}
+                emissiveIntensity={0}
+              />
+            </mesh>
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Vents_Carbon_0.geometry}
+              material={materials.Carbon}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Vents_Vents_0.geometry}
+              material={materials.Vents}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Brake_light_Tail_light_brake_0.geometry}
+              material={materials.Tail_light_brake}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Brake_light_Taillight_glass_0.geometry}
+              material={materials.Taillight_glass}
+            />
+          </group>
+          <group
+            position={[-82.013, -122.593, 31.579]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={32.274}
+          >
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FR_Tire_0.geometry}
+              material={materials.Tire}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FR_Logo_0.geometry}
+              material={materials.Logo}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FR_Caliper_0.geometry}
+              material={materials.Caliper}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FR_Brake_rotor_0.geometry}
+              material={materials.Brake_rotor}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FR_Rim_0.geometry}
+              material={materials.material}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Turning_light_right_0.geometry}
+              material={materials.Turning_light_right}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Turning_light_Left_0.geometry}
+              material={materials.Turning_light_Left}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Body_0.geometry}
+              material={materials.Body}
+            >
+              {" "}
+              <MeshTransitionMaterial
+                roughness={props.roughness - 0.4 || 0.7} // Slightly reflective, diffused for soft light
+                transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                metalness={props.metalness - 0.2 || 0.1} // Less metallic for softer look
+                clearCoat={0.4} // Subtle glossy top layer for icy effect
+                clearCoatRoughness={0.2} // Smooth reflection like icy snow
+              />
+            </mesh>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Turning_light_inside_0.geometry}
+              material={materials.Turning_light_inside}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Interior_black_0.geometry}
+              material={materials.Interior_black}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Plastic_0.geometry}
+              material={materials.Plastic}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Hood075_Turning_light_glass_0.geometry}
+              material={materials.Turning_light_glass}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_doors_Interior_black_0.geometry}
+              material={materials.Interior_black}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_doors_Interior_color_0.geometry}
+              material={materials.Interior_color}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_Carbon_0.geometry}
+              material={materials.Carbon}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_Steering_wheel_0.geometry}
+              material={materials.Steering_wheel}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_parts_Interior_color_0.geometry}
+              material={materials.Interior_color}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_parts_Interior_black_0.geometry}
+              material={materials.Interior_black}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_parts_Carbon_0.geometry}
+              material={materials.Carbon}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Interior_middle_parts_Start_button_lol_0.geometry}
+              material={materials.Start_button_lol}
+            />
+          </group>
+          <group scale={[59.266, 63.024, 63.024]}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Seat_Interior_color_0.geometry}
+              material={materials.Interior_color}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Seat_Interior_Black_0.geometry}
+              material={materials.Interior_Black}
+            />
+          </group>
+          <group
+            position={[39.374, -45.886, 66.194]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          >
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Steering_wheel_Logo_0.geometry}
+              material={materials.Logo}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Steering_wheel_Steering_wheel_0.geometry}
+              material={materials.Steering_wheel}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Speedometer_Cluster_0.geometry}
+              material={materials.Cluster}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Speedometer_Interior_black_0.geometry}
+              material={materials.Interior_black}
+            />
+          </group>
+          <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Mirrors_Body_0.geometry}
+              material={materials.Body}
+            >
+              <MeshTransitionMaterial
+                roughness={props.roughness - 0.4 || 0.25}
+                transitionColor={props.color}
+                metalness={props.metalness - 0.2 || 0.5}
+                clearCoat={0.4}
+                clearCoatRoughness={0.2}
+              />
+            </mesh>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Mirrors_mirror_0.geometry}
+              material={materials.mirror}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Mirrors_Carbon_0.geometry}
+              material={materials.Carbon}
+            />
+          </group>
+          <group
+            position={[-80.477, 134.158, 34.723]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={34.784}
+          >
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BR_Tire_0.geometry}
+              material={materials.Tire}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BR_Logo_0.geometry}
+              material={materials.Logo}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BR_Caliper_0.geometry}
+              material={materials.Caliper}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BR_Brake_rotor_0.geometry}
+              material={materials.Brake_rotor}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BR_Rim_0.geometry}
+              material={materials.material}
+            />
+          </group>
+          <group
+            position={[82.013, -122.593, 31.579]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          >
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FL_Tire_0.geometry}
+              material={materials.Tire}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FL_Logo_0.geometry}
+              material={materials.Logo}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FL_Caliper_0.geometry}
+              material={materials.Caliper}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FL_Brake_rotor_0.geometry}
+              material={materials.Brake_rotor}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_FL_Rim_0.geometry}
+              material={materials.material}
+            />
+          </group>
+          <group
+            position={[80.477, 134.158, 34.723]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          >
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BL_Tire_0.geometry}
+              material={materials.Tire}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BL_Logo_0.geometry}
+              material={materials.Logo}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BL_Caliper_0.geometry}
+              material={materials.Caliper}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BL_Brake_rotor_0.geometry}
+              material={materials.Brake_rotor}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Wheel_BL_Rim_0.geometry}
+              material={materials.material}
+            />
+          </group>
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_6_Carbon_0.geometry}
+            material={materials.Carbon}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Daylight_Glass_Headlight_glass001_0.geometry}
+            material={materials["Headlight_glass.001"]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Daylight_Light_0.geometry}
+            material={materials.Light}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          >
+            <meshStandardMaterial
+              ref={lightref1}
+              color={"#ffffff"}
+              emissive={"#b0b2ff"}
+              emissiveIntensity={0}
+            />
+          </mesh>
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_plastic_part_1_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_4_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_3_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_6_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_vent_Vents_0.geometry}
+            material={materials.Vents}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_1_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_2_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_plastic_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Vents_rear_Vents_0.geometry}
+            material={materials.Vents}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Engine_Engine_0.geometry}
+            material={materials.Engine}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={[100, 94.037, 100]}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_vents_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={[100, 94.037, 100]}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_7_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_4_Carbon_0.geometry}
+            material={materials.Carbon}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_2_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_3_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_vents_2_Vents_0.geometry}
+            material={materials.Vents}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_5_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_8_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Front_part_5_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Headlight_carbon_Carbon_0.geometry}
+            material={materials.Carbon}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Headlight_glass_Headlight_glass_0.geometry}
+            material={materials.Headlight_glass}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Exhaust_2_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Mid_part_3001_Carbon_0.geometry}
+            material={materials.Carbon}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Windshield_Windows_0.geometry}
+            material={materials.Windows}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Mid_part_3_Interior_black_0.geometry}
+            material={materials.Interior_black}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes["Right&Left_window_2_Windows_0"].geometry}
+            material={materials.Windows}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes["Right&Left_windows_Windows_0"].geometry}
+            material={materials.Windows}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Logo_Logo_0.geometry}
+            material={materials.Logo}
+            position={[0.005, -214.073, 43.902]}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={[32.274, 30.349, 32.274]}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Interior_general_Interior_black_0.geometry}
+            material={materials.Interior_black}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_window_Windows_0.geometry}
+            material={materials.Windows}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Mid_part_2_Interior_Black_0.geometry}
+            material={materials.Interior_Black}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Mid_parts_1_Plastic_0.geometry}
+            material={materials.Plastic}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Pedal_Metal_0.geometry}
+            material={materials.Metal}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Steering_wheel_holder_Interior_black_0.geometry}
+            material={materials.Interior_black}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_engine_carbon_vents_Vents_0.geometry}
+            material={materials.Vents}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Rear_part_3001_Taillight_rear_0.geometry}
+            material={materials.Taillight_rear}
+            rotation={[0, 0, -Math.PI / 2]}
+            scale={100}
+          />
+        </group>
+      </group>
+    </group>
+  );
+}
+
+useGLTF.preload("/model2/scene-draco.glb");
