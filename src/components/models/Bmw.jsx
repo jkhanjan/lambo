@@ -1,11 +1,24 @@
 import { useGLTF } from "@react-three/drei";
-import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
-import { useColor } from "../states/ColorContext";
+import PropTypes from "prop-types";
 import { Bloom } from "@react-three/postprocessing";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
 
 export default function BMW(props) {
+  console.log('loading')
+  const spoilers = props.parts.spoiler;
+  const lightref = useRef();
+  const headlights = props.parts.headlights;
+  useFrame(() => {
+    if (!lightref.current) return;
+
+    const target = headlights ? 55 : 1;
+    const current = lightref.current.emissiveIntensity;
+    const speed = 0.1;
+    lightref.current.emissiveIntensity += (target - current) * speed;
+  });
   const { nodes, materials } = useGLTF("/bmw/scene-resized.glb", true);
-  const { selectedColor } = useColor();
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
@@ -117,18 +130,10 @@ export default function BMW(props) {
         >
           {" "}
           <meshStandardMaterial
-            color={"#fff5f5"}
-            metalness={0.1}
-            roughness={1}
-            emissive={"#fffcfc"}
-            emissiveIntensity={55}
-          />
-          <Bloom
-            intensity={10}
-            luminanceThreshold={1.1} // Reacts to moderately bright areas
-            luminanceSmoothing={10.1} // Smooth glow
-            mipmapBlur
-            radius={10}
+            ref={lightref}
+            color={"#ffffff"}
+            emissive={"#b0b2ff"}
+            emissiveIntensity={0}
           />
         </mesh>
         <lineSegments
@@ -171,30 +176,36 @@ export default function BMW(props) {
           geometry={nodes.Object_23.geometry}
           material={materials.BMW_M8RewardRecycled_2020Carbon1_Material}
         />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Object_24.geometry}
-          material={materials.BMW_M8RewardRecycled_2020Carbon1_Material}
-        />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Object_25.geometry}
-          material={materials.BMW_M8RewardRecycled_2020Carbon1_Material}
-        />
+        {spoilers && (
+          <>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Object_24.geometry}
+              material={materials.BMW_M8RewardRecycled_2020Carbon1_Material}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Object_25.geometry}
+              material={materials.BMW_M8RewardRecycled_2020Carbon1_Material}
+            />
+          </>
+        )}
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Object_26.geometry}
           material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
         />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Object_27.geometry}
-          material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
-        />
+        {spoilers && (
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Object_27.geometry}
+            material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
+          />
+        )}
         <mesh
           castShadow
           receiveShadow
@@ -213,18 +224,22 @@ export default function BMW(props) {
           geometry={nodes.Object_30.geometry}
           material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
         />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Object_31.geometry}
-          material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
-        />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Object_32.geometry}
-          material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
-        />
+        {spoilers && (
+          <>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Object_31.geometry}
+              material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
+            />
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.Object_32.geometry}
+              material={materials.BMW_M8RewardRecycled_2020Coloured_Material}
+            />
+          </>
+        )}
         <mesh
           castShadow
           receiveShadow
@@ -270,11 +285,11 @@ export default function BMW(props) {
           material={materials.BMW_M8RewardRecycled_2020Paint_Material}
         >
           <MeshTransitionMaterial
-            roughness={0.3} // Slightly reflective, diffused for soft light
-            transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-            metalness={0.2} // Less metallic for softer look
-            clearCoat={0.8} // Subtle glossy top layer for icy effect
-            clearCoatRoughness={0.2} // Smooth reflection like icy snow
+            roughness={props.roughness - 0.4 || 0.3} // Slightly reflective, diffused for soft light
+            transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+            metalness={props.metalness - 0.2 || 0.2} // Less metallic for softer look
+            clearCoat={0.4} // Subtle glossy top layer for icy effect
+            clearCoatRoughness={0.22} // Smooth reflection like icy snow
           />
         </mesh>
         <mesh
@@ -285,10 +300,10 @@ export default function BMW(props) {
         >
           {" "}
           <MeshTransitionMaterial
-            roughness={0.3} // Slightly reflective, diffused for soft light
-            transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-            metalness={0.2} // Less metallic for softer look
-            clearCoat={0.8} // Subtle glossy top layer for icy effect
+            roughness={props.roughness - 0.4 || 0.3} // Slightly reflective, diffused for soft light
+            transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+            metalness={props.metalness - 0.2 || 0.2} // Less metallic for softer look
+            clearCoat={0.4} // Subtle glossy top layer for icy effect
             clearCoatRoughness={0.2} // Smooth reflection like icy snow
           />
         </mesh>
@@ -300,10 +315,10 @@ export default function BMW(props) {
         >
           {" "}
           <MeshTransitionMaterial
-            roughness={0.3} // Slightly reflective, diffused for soft light
-            transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-            metalness={0.2} // Less metallic for softer look
-            clearCoat={0.8} // Subtle glossy top layer for icy effect
+            roughness={props.roughness - 0.4 || 0.3} // Slightly reflective, diffused for soft light
+            transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+            metalness={props.metalness - 0.2 || 0.2} // Less metallic for softer look
+            clearCoat={0.4} // Subtle glossy top layer for icy effect
             clearCoatRoughness={0.2} // Smooth reflection like icy snow
           />
         </mesh>
@@ -320,10 +335,10 @@ export default function BMW(props) {
           material={materials.BMW_M8RewardRecycled_2020Paint_Material}
         >
           <MeshTransitionMaterial
-            roughness={0.3} // Slightly reflective, diffused for soft light
-            transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-            metalness={0.2} // Less metallic for softer look
-            clearCoat={0.8} // Subtle glossy top layer for icy effect
+            roughness={props.roughness - 0.4 || 0.3} // Slightly reflective, diffused for soft light
+            transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+            metalness={props.metalness - 0.2 || 0.2} // Less metallic for softer look
+            clearCoat={0.4} // Subtle glossy top layer for icy effect
             clearCoatRoughness={0.2} // Smooth reflection like icy snow
           />
         </mesh>
@@ -335,10 +350,10 @@ export default function BMW(props) {
         >
           {" "}
           <MeshTransitionMaterial
-            roughness={0.3} // Slightly reflective, diffused for soft light
-            transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-            metalness={0.2} // Less metallic for softer look
-            clearCoat={0.8} // Subtle glossy top layer for icy effect
+            roughness={props.roughness - 0.4 || 0.3} // Slightly reflective, diffused for soft light
+            transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+            metalness={props.metalness - 0.2 || 0.2} // Less metallic for softer look
+            clearCoat={0.4} // Subtle glossy top layer for icy effect
             clearCoatRoughness={0.2} // Smooth reflection like icy snow
           />
         </mesh>

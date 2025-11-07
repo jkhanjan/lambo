@@ -1,13 +1,30 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useColor } from "../states/ColorContext";
-import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
+import PropTypes from "prop-types";
+import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
 import { Bloom } from "@react-three/postprocessing";
+import { useFrame } from "@react-three/fiber";
 
 export default function Porshe(props) {
-  const { nodes, materials } = useGLTF("/porshe/scene-draco.glb", true);
+  console.log('loading')
 
-  const { selectedColor } = useColor();
+  const lightref = useRef();
+  const lightref1 = useRef();
+  const headlights = props.parts.headlights;
+
+  const spoilers = props.parts.spoiler;
+  const { nodes, materials } = useGLTF("/porshe/scene-draco.glb", true);
+  useFrame(() => {
+    if (!lightref.current || !lightref1.current) return;
+
+    const target = headlights ? 55 : 1;
+    const target1 = headlights ? 55 : 1;
+    const current = lightref1.current.emissiveIntensity;
+    const current1 = lightref1.current.emissiveIntensity;
+    const speed = 0.1;
+    lightref.current.emissiveIntensity += (target - current) * speed;
+    lightref1.current.emissiveIntensity += (target1 - current1) * speed;
+  });
   return (
     <group {...props} dispose={null}>
       <group position={[0.193, 0, -0.477]} scale={2.995}>
@@ -120,11 +137,11 @@ export default function Porshe(props) {
                 material={materials.Gray_Vehicle_Paint}
               >
                 <MeshTransitionMaterial
-                  roughness={0.1} // Slightly reflective, diffused for soft light
-                  transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-                  metalness={1.1} // Less metallic for softer look
-                  clearCoat={1} // Subtle glossy top layer for icy effect
-                  clearCoatRoughness={10} // Smooth reflection like icy snow
+                  roughness={props.roughness - 0.5 || 0.1} // Slightly reflective, diffused for soft light
+                  transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                  metalness={props.roughness - 0.3 || 1.1} // Less metallic for softer look
+                  clearCoat={0} // Subtle glossy top layer for icy effect
+                  clearCoatRoughness={0} // Smooth reflection like icy snow
                 />
               </mesh>
               <mesh
@@ -272,11 +289,11 @@ export default function Porshe(props) {
               >
                 {" "}
                 <MeshTransitionMaterial
-                  roughness={0.1} // Slightly reflective, diffused for soft light
-                  transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-                  metalness={1.1} // Less metallic for softer look
-                  clearCoat={1} // Subtle glossy top layer for icy effect
-                  clearCoatRoughness={10} // Smooth reflection like icy snow
+                  roughness={props.roughness - 0.5 || 0.1} // Slightly reflective, diffused for soft light
+                  transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                  metalness={props.metalness - 0.3 || 1.1} // Less metallic for softer look
+                  clearCoat={0} // Subtle glossy top layer for icy effect
+                  clearCoatRoughness={0} // Smooth reflection like icy snow
                 />
               </mesh>
               <mesh
@@ -363,18 +380,10 @@ export default function Porshe(props) {
               material={materials.Dark_Glass}
             >
               <meshStandardMaterial
+                ref={lightref1}
                 color={"#e1dcdc"}
-                metalness={0.9}
-                roughness={0.1}
-                emissive={"#f7f2f2"}
-                emissiveIntensity={10}
-              />
-              <Bloom
-                intensity={10}
-                luminanceThreshold={1.1} // Reacts to moderately bright areas
-                luminanceSmoothing={10.1} // Smooth glow
-                mipmapBlur
-                radius={10}
+                emissive={"#b0b2ff"}
+                emissiveIntensity={20}
               />
             </mesh>
           </group>
@@ -478,17 +487,8 @@ export default function Porshe(props) {
             >
               <meshStandardMaterial
                 color={"#e1dcdc"}
-                metalness={0.1}
-                roughness={0.1}
-                emissive={"#f7f2f2"}
+                emissive={"#b0b2ff"}
                 emissiveIntensity={20}
-              />
-              <Bloom
-                intensity={10}
-                luminanceThreshold={1.1} // Reacts to moderately bright areas
-                luminanceSmoothing={10.1} // Smooth glow
-                mipmapBlur
-                radius={10}
               />
             </mesh>
             <mesh
@@ -575,27 +575,31 @@ export default function Porshe(props) {
               position={[0, -0.58, 0.861]}
               rotation={[Math.PI / 2, 0, -Math.PI]}
             >
-              <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Object_115.geometry}
-                material={materials.Gray_Vehicle_Paint}
-              >
-                {" "}
-                <MeshTransitionMaterial
-                  roughness={0.1} // Slightly reflective, diffused for soft light
-                  transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-                  metalness={1.1} // Less metallic for softer look
-                  clearCoat={1} // Subtle glossy top layer for icy effect
-                  clearCoatRoughness={10} // Smooth reflection like icy snow
-                />
-              </mesh>
-              <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Object_116.geometry}
-                material={materials.Dark_01}
-              />
+              {spoilers && (
+                <>
+                  <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.Object_115.geometry}
+                    material={materials.Gray_Vehicle_Paint}
+                  >
+                    {" "}
+                    <MeshTransitionMaterial
+                      roughness={props.roughness - 0.5 || 0.1} // Slightly reflective, diffused for soft light
+                      transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                      metalness={props.metalness - 0.3 || 1.1} // Less metallic for softer look
+                      clearCoat={0} // Subtle glossy top layer for icy effect
+                      clearCoatRoughness={0} // Smooth reflection like icy snow
+                    />
+                  </mesh>
+                  <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.Object_116.geometry}
+                    material={materials.Dark_01}
+                  />
+                </>
+              )}
               <mesh
                 castShadow
                 receiveShadow
@@ -750,11 +754,11 @@ export default function Porshe(props) {
               >
                 {" "}
                 <MeshTransitionMaterial
-                  roughness={0.1} // Slightly reflective, diffused for soft light
-                  transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-                  metalness={1.1} // Less metallic for softer look
-                  clearCoat={1} // Subtle glossy top layer for icy effect
-                  clearCoatRoughness={10} // Smooth reflection like icy snow
+                  roughness={props.roughness - 0.5 || 0.1} // Slightly reflective, diffused for soft light
+                  transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                  metalness={props.metalness - 0.3 || 1.1} // Less metallic for softer look
+                  clearCoat={0} // Subtle glossy top layer for icy effect
+                  clearCoatRoughness={0} // Smooth reflection like icy snow
                 />
               </mesh>
               <mesh
@@ -851,17 +855,10 @@ export default function Porshe(props) {
               {" "}
               <meshStandardMaterial
                 color={"#e1dcdc"}
-                metalness={0.1}
-                roughness={0.1}
-                emissive={"#f7f2f2"}
-                emissiveIntensity={10}
-              />
-              <Bloom
-                intensity={10}
-                luminanceThreshold={1.1} // Reacts to moderately bright areas
-                luminanceSmoothing={10.1} // Smooth glow
-                mipmapBlur
-                radius={10}
+                metalness={props.metalness || 0.1}
+                roughness={props.roughness || 0.1}
+                emissive={"#b0b2ff"}
+                emissiveIntensity={20}
               />
             </mesh>
           </group>
@@ -958,9 +955,8 @@ export default function Porshe(props) {
               {" "}
               <meshStandardMaterial
                 color={"#e1dcdc"}
-                metalness={0.1}
-                roughness={0.1}
-                emissive={"#f7f2f2"}
+                ref={lightref1}
+                emissive={"#b0b2ff"}
                 emissiveIntensity={20}
               />
               <Bloom
@@ -1144,11 +1140,11 @@ export default function Porshe(props) {
           >
             {" "}
             <MeshTransitionMaterial
-              roughness={0.1} // Slightly reflective, diffused for soft light
-              transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-              metalness={1.1} // Less metallic for softer look
-              clearCoat={0.8} // Subtle glossy top layer for icy effect
-              clearCoatRoughness={10} // Smooth reflection like icy snow
+              roughness={props.roughness - 0.5 || 0.1} // Slightly reflective, diffused for soft light
+              transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+              metalness={props.metalness - 0.3 || 1.1} // Less metallic for softer look
+              clearCoat={0} // Subtle glossy top layer for icy effect
+              clearCoatRoughness={0} // Smooth reflection like icy snow
             />
           </mesh>
           <mesh
@@ -1346,5 +1342,13 @@ export default function Porshe(props) {
     </group>
   );
 }
+
+Porshe.propTypes = {
+  color: PropTypes.string,
+  metalness: PropTypes.number,
+  roughness: PropTypes.number,
+  parts: PropTypes.object,
+  accessories: PropTypes.object,
+};
 
 useGLTF.preload("/porshe/scene-draco.glb");

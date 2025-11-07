@@ -1,25 +1,31 @@
 .button {
-  padding: 8px 20px;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #b0cfde;
+  padding: 10px 25px;
+  background: rgba(176, 207, 222, 0.1);
+  border: 1px solid rgba(176, 207, 222, 0.5);
   color: #b0cfde;
   font-family: "Arial", sans-serif;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  letter-spacing: 1.5px;
+  border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px #b0cfde, inset 0 0 10px #b0cfde;
-  text-shadow: 0 0 5px #b0cfde;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px rgba(176, 207, 222, 0.3);
+  text-shadow: 0 0 5px rgba(176, 207, 222, 0.5);
   max-width: 90%;
 }
-
+.app{
+  width: 100vw;
+  height: 100vh;
+}
 .button:hover {
-  background: rgba(0, 255, 255, 0.1);
+  background: rgba(176, 207, 222, 0.2);
   transform: scale(1.05);
-  box-shadow: 0 0 20px #b0cfde, inset 0 0 20px #b0cfde;
+  box-shadow: 0 0 20px rgba(176, 207, 222, 0.5);
+  border-color: rgba(176, 207, 222, 0.8);
 }
 
 .button-overlay {

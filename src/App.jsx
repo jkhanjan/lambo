@@ -1,66 +1,95 @@
 import React, { useState, Suspense, useReducer, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import CameraController from "./functionality/CameraController.jsx";
-import ResponsiveCamera from "./functionality/ResponsiveCamera.jsx";
+import { Canvas } from "@react-three/fiber";
+import ResponsiveCamera from "./components/utils/ResponsiveCamera.jsx";
+import CameraController from "./components/utils/CameraController.jsx";
 import { Loader, OrbitControls, Preload } from "@react-three/drei";
 import "./App.css";
-import Studio from "./Studio";
-import Floor from "./Floor";
-import Effects from "./Effects";
-import Overlay from "./Overlay.jsx";
-import ColorProvider from "./states/ColorContext.jsx";
-import { carReducer, initialCarState } from "./reducer/CarReducer.jsx";
-import PreloadCars from "./functionality/PreLoadAll.jsx";
-import LoadTracker from "./functionality/Loader.jsx";
+import Studio from "./components/Effects/Studio.jsx";
+import Floor from "./components/Effects/Floor.jsx";
+import Effects from "./components/Effects/Effects.jsx";
+import Overlay from "./components/UI/Overlay.jsx";
+import {
+  carReducer,
+  initialCarState,
+} from "./components/reducer/CarReducer.jsx";
+import {
+  MODEL_MAP,
+  VIEW_NAMES,
+  VIEWS,
+} from "./components/constants/constanst.js";
+import { preloadModels } from "./components/utils/PreloadModels.jsx";
 
 const App = () => {
   const [carState, dispatch] = useReducer(carReducer, initialCarState);
-  const [opacity, setOpacity] = useState(1);
   const [cameraView, setCameraView] = useState("default");
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [firstModelLoaded, setFirstModelLoaded] = useState(false);
 
-  const views = ["default", "sideView", "topView", "backView"];
-  const viewNames = {
-    default: "Default View",
-    sideView: "Side View",
-    topView: "Top View",
-    backView: "Back View",
-  };
+  const CurrentModel = MODEL_MAP[carState.modelName];
+  useEffect(() => {
+    preloadModels();
+  },[])
 
   const handleCameraViewChange = () => {
-    const currentIndex = views.indexOf(cameraView);
-    const nextIndex = (currentIndex + 1) % views.length;
-    setCameraView(views[nextIndex]);
+    const currentIndex = VIEWS.indexOf(cameraView);
+    const nextIndex = (currentIndex + 1) % VIEWS.length;
+    setCameraView(VIEWS[nextIndex]);
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 1000);
   };
 
   const handleModelChange = (modelName) => {
-    setOpacity(0);
     setTimeout(() => {
-      dispatch({ type: "SET_MODEL", model: modelName });
-      setOpacity(1);
+      dispatch({ type: "SET_MODEL", modelName });
     }, 500);
+  };
+
+  const handleModelColorChange = (color) => {
+    dispatch({ type: "SET_COLOR", color });
+  };
+
+  const handleTextureChange = ({ metalness, roughness }) => {
+    dispatch({ type: "SET_MATERIAL", metalness, roughness });
+  };
+
+  const handleEnvironmentChange = (environment) => {
+    dispatch({ type: "SET_ENVIRONMENT", environment });
+  };
+
+  const handlePartsChange = (parts) => {
+    dispatch({ type: "TOGGLE_PART", partName: parts });
   };
 
   return (
     <>
-      <div className="button-overlay">
-        <button onClick={handleCameraViewChange} className="button">
-          {viewNames[cameraView]}
-        </button>
-      </div>
+      <div className="app">
+        <Suspense fallback={<Loader />}>
+          <Overlay
+            environment={carState.environment}
+            setActiveModel={handleModelChange}
+            setActiveColor={handleModelColorChange}
+            setActiveTexture={handleTextureChange}
+            setActiveEnvironment={handleEnvironmentChange}
+            setActiveParts={handlePartsChange}
+            carState={carState}
+          />
 
-      <Suspense fallback={<Loader />}>
-        <ColorProvider>
-          <Overlay setActiveModel={handleModelChange} />
+          <div className="button-overlay">
+            <button onClick={handleCameraViewChange} className="button">
+              {VIEW_NAMES[cameraView]}
+            </button>
+          </div>
           <Canvas className="canvas" shadows>
             <ResponsiveCamera />
-            <Studio />
-            <mesh opacity={opacity}>{carState.model}</mesh>
-            <Floor />
-            <Effects />
+            <Studio environment={carState.environment} />
+            <CurrentModel
+              color={carState.color}
+              metalness={carState.metalness}
+              roughness={carState.roughness}
+              parts={carState.parts}
+              accessories={carState.accessories}
+            />
+            <Floor environment={carState.environment} />
+            <Effects environment={carState.environment} />
             <CameraController
               view={cameraView}
               isTransitioning={isTransitioning}
@@ -76,17 +105,8 @@ const App = () => {
             />
             <Preload all />
           </Canvas>
-          {carState.name === "Model1" && !firstModelLoaded && (
-            <LoadTracker
-              onComplete={() => {
-                setFirstModelLoaded(true);
-                console.log("First model loaded, starting background preload");
-              }}
-            />
-          )}
-          {firstModelLoaded && <PreloadCars />}
-        </ColorProvider>
-      </Suspense>
+        </Suspense>
+      </div>
     </>
   );
 };

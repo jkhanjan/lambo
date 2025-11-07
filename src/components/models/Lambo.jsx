@@ -1,16 +1,60 @@
-import React, { useRef } from "react";
-import { useGLTF } from "@react-three/drei";
-import { Bloom } from "@react-three/postprocessing";
-import * as THREE from "three";
-import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
-import { useColor } from "../states/ColorContext";
+import { Decal, useGLTF } from "@react-three/drei";
+import { Bloom, EffectComposer, LensFlare } from "@react-three/postprocessing";
+import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import Fire from "./Fire";
+
 export default function Lambo(props) {
+  console.log('loading')
+
+  const lightref = useRef();
+  const lightref1 = useRef();
+
+  const spoilers = props.parts.spoiler;
+  const headlights = props.parts.headlights;
+
   const { nodes, materials } = useGLTF("/model2/scene-draco.glb", true);
-  const { selectedColor } = useColor();
+  const { nodes: spoilerNodes, materials: spoilerMaterials } = useGLTF(
+    "./spoiler/spoilers/scene.gltf"
+  );
+
+  useFrame(() => {
+    if (!lightref.current || !lightref1.current) return;
+
+    const target = headlights ? 23 : 1; // desired intensity
+    const target1 = headlights ? 33 : 2; // desired intensity
+    const current = lightref.current.emissiveIntensity;
+    const current1 = lightref1.current.emissiveIntensity;
+
+    const speed = 0.1;
+    lightref.current.emissiveIntensity += (target - current) * speed;
+    lightref1.current.emissiveIntensity += (target1 - current1) * speed;
+  });
+
   return (
     <group {...props} dispose={null}>
       <group rotation={[Math.PI / 2, 0, 0]}>
         <group rotation={[-Math.PI, 0, 0]} scale={0.01}>
+          {spoilers && (
+            <group scale={0.6}>
+              <mesh
+                castShadow
+                receiveShadow
+                geometry={spoilerNodes.modSpoiler__0.geometry}
+                material={spoilerMaterials["Scene_-_Root"]}
+                position={[0, 266, 115]}
+                rotation={[Math.PI / 2, 0, 0]}
+              >
+                <meshStandardMaterial
+                  color="#484242"
+                  metalness={1.0}
+                  roughness={1.1}
+                  envMapIntensity={1}
+                />
+              </mesh>
+            </group>
+          )}
           <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
             <mesh
               castShadow
@@ -20,6 +64,7 @@ export default function Lambo(props) {
             >
               <MeshTransitionMaterial intensity={0.1} radius={1.5} />
             </mesh>
+
             <mesh
               castShadow
               receiveShadow
@@ -151,7 +196,14 @@ export default function Lambo(props) {
               receiveShadow
               geometry={nodes.Headlight_Headlight_light_0.geometry}
               material={materials.Headlight_light}
-            />
+            >
+              <meshStandardMaterial
+                ref={lightref}
+                color={"#ffffff"}
+                emissive={"#b0b2ff"}
+                emissiveIntensity={0}
+              />
+            </mesh>
           </group>
           <group rotation={[0, 0, -Math.PI / 2]} scale={100}>
             <mesh
@@ -238,11 +290,11 @@ export default function Lambo(props) {
             >
               {" "}
               <MeshTransitionMaterial
-                roughness={0.7} // Slightly reflective, diffused for soft light
-                transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-                metalness={0.1} // Less metallic for softer look
-                clearCoat={0.8} // Subtle glossy top layer for icy effect
-                clearCoatRoughness={10} // Smooth reflection like icy snow
+                roughness={props.roughness - 0.4 || 0.7} // Slightly reflective, diffused for soft light
+                transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+                metalness={props.metalness - 0.2 || 0.1} // Less metallic for softer look
+                clearCoat={0.4} // Subtle glossy top layer for icy effect
+                clearCoatRoughness={0.2} // Smooth reflection like icy snow
               />
             </mesh>
             <mesh
@@ -378,11 +430,11 @@ export default function Lambo(props) {
               material={materials.Body}
             >
               <MeshTransitionMaterial
-                roughness={0.25}
-                transitionColor={selectedColor}
-                metalness={0.5}
-                clearCoat={1}
-                clearCoatRoughness={0.5}
+                roughness={props.roughness - 0.4 || 0.25}
+                transitionColor={props.color}
+                metalness={props.metalness - 0.2 || 0.5}
+                clearCoat={0.4}
+                clearCoatRoughness={0.2}
               />
             </mesh>
             <mesh
@@ -530,12 +582,11 @@ export default function Lambo(props) {
             rotation={[0, 0, -Math.PI / 2]}
             scale={100}
           >
-            <Bloom
-              intensity={1}
-              luminanceThreshold={1.1} // Reacts to moderately bright areas
-              luminanceSmoothing={0.1} // Smooth glow
-              mipmapBlur
-              radius={10}
+            <meshStandardMaterial
+              ref={lightref1}
+              color={"#ffffff"}
+              emissive={"#b0b2ff"}
+              emissiveIntensity={0}
             />
           </mesh>
           <mesh

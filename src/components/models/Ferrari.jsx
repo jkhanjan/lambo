@@ -1,16 +1,53 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useColor } from "../states/ColorContext";
-import MeshTransitionMaterial from "../meshTransition/MeshTransitionMaterial";
+import PropTypes from "prop-types";
 import { Bloom } from "@react-three/postprocessing";
+import { useFrame } from "@react-three/fiber";
+import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
 
 export default function Ferrari(props) {
+  console.log('loading')
+
+  const lightref = useRef();
+  const headlights = props.parts.headlights;
+
+  useFrame(() => {
+    if (!lightref.current) return;
+
+    const target = headlights ? 23 : 1;
+    const current = lightref.current.emissiveIntensity;
+    const speed = 0.1;
+    lightref.current.emissiveIntensity += (target - current) * speed;
+  });
+
+  const spoilers = props.parts.spoiler;
   const group = useRef();
   const { nodes, materials } = useGLTF("/model/scene-draco.glb", true);
-  const { selectedColor } = useColor();
+  const { nodes: spoilerNodes, materials: spoilerMaterials } = useGLTF(
+    "./spoiler/spoilers/scene.gltf"
+  );
   return (
     <group {...props} dispose={null}>
       <group scale={0.0115} position={[0, 0, -1.3]}>
+        {spoilers && (
+          <group scale={0.6}>
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={spoilerNodes.modSpoiler__0.geometry}
+              material={spoilerMaterials["Scene_-_Root"]}
+              position={[0, 105, -55]}
+              rotation={[0, 0, 0]}
+            >
+              <meshStandardMaterial
+                color="#484242"
+                metalness={1.0} // how metallic it looks (0 to 1)
+                roughness={0.1} // how smooth or rough the metal is
+                envMapIntensity={1}
+              />
+            </mesh>
+          </group>
+        )}
         <group
           position={[0, 0.113, 128.58]}
           rotation={[-1.572, 0, -Math.PI]}
@@ -23,11 +60,11 @@ export default function Ferrari(props) {
             material={materials["Stradale.023"]}
           >
             <MeshTransitionMaterial
-              roughness={0.3} // Slightly reflective, diffused for soft light
-              transitionColor={selectedColor || "#b0c4de"} // Light steel blue or similar to snowy tones
-              metalness={0.2} // Less metallic for softer look
-              clearCoat={0.8} // Subtle glossy top layer for icy effect
-              clearCoatRoughness={0.2} // Smooth reflection like icy snow
+              roughness={props.roughness - 0.3 || 0.3} // Slightly reflective, diffused for soft light
+              transitionColor={props.color || "#b0c4de"} // Light steel blue or similar to snowy tones
+              metalness={props.metalness | -0.1 | 0.2} // Less metallic for softer look
+              clearCoat={0.5} // Subtle glossy top layer for icy effect
+              clearCoatRoughness={0.4} // Smooth reflection like icy snow
             />
           </mesh>
           <mesh
@@ -381,7 +418,14 @@ export default function Ferrari(props) {
           position={[0, 0.113, 128.58]}
           rotation={[-1.572, 0, -Math.PI]}
           scale={24.295}
-        />
+        >
+          <meshStandardMaterial
+            ref={lightref}
+            color={"#ffffff"}
+            emissive={"#b0b2ff"}
+            emissiveIntensity={6}
+          />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -491,5 +535,13 @@ export default function Ferrari(props) {
     </group>
   );
 }
+
+Ferrari.propTypes = {
+  color: PropTypes.string,
+  metalness: PropTypes.number,
+  roughness: PropTypes.number,
+  parts: PropTypes.object,
+  accessories: PropTypes.object,
+};
 
 useGLTF.preload("/model/scene-draco.glb");
