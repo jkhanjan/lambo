@@ -1,7 +1,7 @@
-import BMW from "../models/BMW";
 import Ferrari from "../models/Ferrari";
 import Lambo from "../models/Lambo";
 import Porshe from "../models/Porshe";
+import BMW from "../models/BMW";
 
 export const MODEL_MAP = {
   lambo: Lambo,
