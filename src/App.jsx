@@ -1,4 +1,5 @@
 import React, { useState, Suspense, useReducer, useEffect } from "react";
+import axios from "axios";
 import { Canvas } from "@react-three/fiber";
 import ResponsiveCamera from "./components/utils/ResponsiveCamera.jsx";
 import CameraController from "./components/utils/CameraController.jsx";
@@ -24,10 +25,49 @@ const App = () => {
   const [cameraView, setCameraView] = useState("default");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  const [aiInput, setAiInput] = useState("");
+  const [isAILoading, setIsAILoading] = useState(false);
+
   const CurrentModel = MODEL_MAP[carState.modelName];
   useEffect(() => {
     preloadModels();
-  },[])
+  }, []);
+
+  const executeCommand = (cmd) => {
+    if (!cmd || cmd.domain === "unknown") return;
+
+    switch (cmd.domain) {
+      case "model":
+        handleModelChange(cmd.value);
+        break;
+
+      case "environment":
+        handleEnvironmentChange(cmd.value);
+        break;
+
+      case "color":
+        handleModelColorChange(cmd.value);
+        break;
+
+      case "camera":
+        handleCameraViewChange(cmd.value);
+        break;
+
+      case "paint":
+        handleTextureChange({
+          metalness: cmd.value.metalness ?? carState.metalness,
+          roughness: cmd.value.roughness ?? carState.roughness,
+        });
+        break;
+
+      case "accessory":
+        handlePartsChange(cmd.value);
+        break;
+
+      default:
+        console.warn("Unhandled command:", cmd);
+    }
+  };
 
   const handleCameraViewChange = () => {
     const currentIndex = VIEWS.indexOf(cameraView);
@@ -59,6 +99,33 @@ const App = () => {
     dispatch({ type: "TOGGLE_PART", partName: parts });
   };
 
+  const handleAISubmit = async () => {
+    if (!aiInput.trim()) return;
+
+    setIsAILoading(true);
+
+    console.log("User prompt:", aiInput);
+
+    try {
+      const { data } = await axios.post("http://localhost:3001/chat", {
+        message: aiInput,
+      });
+
+      console.log("AI Response:", data);
+
+      if (Array.isArray(data.commands)) {
+        data.commands.forEach(executeCommand);
+      } else {
+        executeCommand(data);
+      }
+    } catch (err) {
+      console.error("Error fetching AI response:", err);
+    }
+
+    setAiInput("");
+    setIsAILoading(false);
+  };
+
   return (
     <>
       <div className="app">
@@ -78,7 +145,73 @@ const App = () => {
               {VIEW_NAMES[cameraView]}
             </button>
           </div>
-          <Canvas className="canvas" shadows>
+
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-20">
+            <div
+              className="
+                flex items-center gap-3
+                w-[36rem]
+                px-5 py-3
+                rounded-full
+                backdrop-blur-xl
+                bg-gradient-to-br
+                from-[rgba(214,222,226,0.18)]
+                to-[rgba(176,207,222,0.1)]
+                border
+                border-[rgba(176,207,222,0.8)]
+                shadow-[0_20px_40px_rgba(0,0,0,0.35)]
+              "
+            >
+              <input
+                type="text"
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAISubmit()}
+                placeholder="Ask AI: Make it a red BMW in snow"
+                className="
+                  flex-1
+                  bg-transparent
+                  outline-none
+                  text-white
+                  text-[15px]
+                  placeholder:text-[#b8bbbb]
+                "
+              />
+
+              <button
+                onClick={handleAISubmit}
+                disabled={isAILoading}
+                className="
+                    px-5 py-2
+                    rounded-full
+                    font-medium
+                    text-white
+                    border
+                    border-[rgba(176,207,222,0.9)]
+                    bg-gradient-to-br
+                    from-[rgba(214,222,226,0.55)]
+                    to-[rgba(176,207,222,0.35)]
+                    transition-all
+                    duration-300
+                    hover:-translate-y-[1px]
+                    hover:shadow-[0_10px_28px_rgba(176,207,222,0.45)]
+                    disabled:opacity-60
+                    disabled:cursor-not-allowed
+                  "
+              >
+                {isAILoading ? "…" : "Send"}
+              </button>
+            </div>
+          </div>
+
+          <Canvas
+            className="canvas"
+            shadows
+            gl={{
+              preserveDrawingBuffer: false,
+              powerPreference: "high-performance",
+            }}
+          >
             <ResponsiveCamera />
             <Studio environment={carState.environment} />
             <CurrentModel
