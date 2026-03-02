@@ -6,7 +6,7 @@ import { useFrame } from "@react-three/fiber";
 import MeshTransitionMaterial from "../materials/MeshTransitionMaterial";
 
 export default function BMW(props) {
-  console.log('loading')
+  
   const spoilers = props.parts.spoiler;
   const lightref = useRef();
   const headlights = props.parts.headlights;

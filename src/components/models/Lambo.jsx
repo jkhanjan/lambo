@@ -6,8 +6,6 @@ import { useFrame } from "@react-three/fiber";
 import Fire from "./Fire";
 
 export default function Lambo(props) {
-  console.log('loading')
-
   const lightref = useRef();
   const lightref1 = useRef();
 

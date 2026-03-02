@@ -11,7 +11,6 @@ const OverlayComponent = ({
   setActiveColor,
   setActiveTexture,
   setActiveEnvironment,
-  setActiveSpoiler,
   setActiveParts,
   carState,
   environment = "night",

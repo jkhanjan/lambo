@@ -12,5 +12,4 @@ export const preloadModels = () => {
     useGLTF.preload("/model2/scene-draco.glb")
   );
   import("../models/Bmw").then(() => useGLTF.preload("/bmw/scene-resized.glb"));
-  import("../models/Fire").then(() => useGLTF.preload("/fire/scene.gltf"));
 };
