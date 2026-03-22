@@ -2,6 +2,13 @@ import Ferrari from "../models/Ferrari";
 import Lambo from "../models/Lambo";
 import Porshe from "../models/Porshe";
 import BMW from "../models/Bmw";
+import gray from "/imag4.jpg";
+import white from "/gray.jpg";
+import green from "../../../public/green.avif";
+import blue from "../../../public/bluish.jpg";
+import yellow from "../../../public/yellow.avif";
+import orange from "../../../public/red.avif";
+
 
 export const MODEL_MAP = {
   lambo: Lambo,
@@ -21,13 +28,12 @@ export const VIEW_NAMES = {
 export const VIEWS = ["default", "sideView", "topView", "backView"];
 
 export const GRADIENT_COLOR = [
-  "#ffffff", // White
-  "#f0f0f0", // Light Grey
-  "#d3d3d3", // Grey
-  "#c0c0c0", // Silver
-  "#a9a9a9", // Dark Grey
-  "#808080", // Grey
-  "#6a6969", // Grey
+  gray,
+  green,
+  blue,
+  yellow,
+  white,
+  orange
 ];
 
 export const ENVIRONMENTS = {

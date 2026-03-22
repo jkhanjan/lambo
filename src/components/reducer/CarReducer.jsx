@@ -1,14 +1,15 @@
-// carReducer.js
+import white from "/gray.jpg";
+// carwhiteucer.js
 export const initialCarState = {
   modelName: "lambo",
-  color: "#ebfc7b",
-  metalness: 0.5,
-  roughness: 0.8,
+  color: white,
+  metalness: 0.1,
+  roughness: 0.01,
   environment: "snow",
   parts: {
-    spoiler: false,
+    spoiler: false, 
     mirrors: "standard",
-    wheels: "sport", 
+    wheels: "sport",
     exhaust: true,
     headlights: true,
     fog_lights: false,
@@ -17,11 +18,23 @@ export const initialCarState = {
     stripes: false,
     decals: [],
     tint: 0,
-  }
+  },
 };
 
 export const carReducer = (state, action) => {
   switch (action.type) {
+    case "BATCH_UPDATE":
+      return {
+        ...state,
+        ...action.payload,
+        parts: action.payload.parts
+          ? { ...state.parts, ...action.payload.parts }
+          : state.parts,
+        accessories: action.payload.accessories
+          ? { ...state.accessories, ...action.payload.accessories }
+          : state.accessories,
+      };
+
     case "SET_MODEL":
       return {
         ...state,
@@ -45,7 +58,7 @@ export const carReducer = (state, action) => {
       return {
         ...state,
         environment: action.environment,
-      }
+      };
 
     case "TOGGLE_PART":
       return {

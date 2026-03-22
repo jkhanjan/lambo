@@ -19,8 +19,9 @@
 }
 .app{
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
 }
+
 .button:hover {
   background: rgba(176, 207, 222, 0.2);
   transform: scale(1.05);
