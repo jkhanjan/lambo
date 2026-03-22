@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useCarContext } from "../../context/carContext";
+import { useCarContext } from "../../context/CarContext";
 
 export function AccessoriesPicker() {
   const { carState, togglePart } = useCarContext();
