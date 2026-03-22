@@ -10,7 +10,7 @@ import Studio from "./components/Effects/Studio.jsx";
 import Floor from "./components/Effects/Floor.jsx";
 import Effects from "./components/Effects/Effects.jsx";
 import { Overlay } from "./components/UI/Overlay.jsx";
-import { GRADIENT_COLOR, MODEL_MAP, VIEW_NAMES, VIEWS } from "./components/constants/constanst.js";
+import { GRADIENT_COLOR, MODEL_MAP } from "./components/constants/constanst.js";
 import { useCarContext } from "./components/context/CarContext.jsx";
 
 const App = () => {
@@ -44,7 +44,6 @@ const { carState, transitionProgress, isTransitioning } = useCarContext();
           />
           <Floor environment={carState.environment} />
           <Effects environment={carState.environment} />
-           {/* <TransitionEffect progress={transitionProgress} /> */}
           <CameraController view={cameraView} isTransitioning={isTransitioning} />
           <OrbitControls
             enableZoom
