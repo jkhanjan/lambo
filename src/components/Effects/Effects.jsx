@@ -13,6 +13,7 @@ import {
   ToneMapping,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
+import CursorDistortion from "./CursorDistortion";
 
 const FloatingParticles = () => {
   const pointsRef = useRef();
@@ -55,7 +56,7 @@ const FloatingParticles = () => {
         `}
         fragmentShader={`
           void main() {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // White particles
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); 
           }
         `}
         uniforms={{
@@ -97,6 +98,7 @@ const Effects = ({ environment }) => {
           layers={[1]} // Apply bloom only to layer 1
         />
         <ChromaticAberration offset={[0.001, 0.002]} />
+        <CursorDistortion strength={0.04} radius={0.2} />
       </EffectComposer></>
       )}
       {environment === "snow" && (
@@ -126,6 +128,8 @@ const Effects = ({ environment }) => {
           layers={[1]} // Apply bloom only to layer 1
         />
         <ChromaticAberration offset={[0.001, 0.002]} />
+        <CursorDistortion strength={0.04} radius={0.2} />
+
       </EffectComposer></>
       )}
 
@@ -135,6 +139,7 @@ const Effects = ({ environment }) => {
       <Bloom intensity={0.8} luminanceThreshold={0.3} luminanceSmoothing={.8} />
       <ToneMapping adaptive averageLuminance={.5} middleGrey={0.6} />
       <Vignette offset={0.2} darkness={1.0} />
+        <CursorDistortion strength={0.04} radius={0.2} />
     </EffectComposer>
 
       )}
