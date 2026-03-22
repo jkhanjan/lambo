@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 import { GRADIENT_COLOR } from "../../constants/constanst";
-import { useCarContext } from "../../context/carContext";
+import { useCarContext } from "../../context/CarContext";
 
 export function ColorPicker() {
   const { setColor } = useCarContext();

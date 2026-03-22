@@ -11,8 +11,7 @@ import Floor from "./components/Effects/Floor.jsx";
 import Effects from "./components/Effects/Effects.jsx";
 import { Overlay } from "./components/UI/Overlay.jsx";
 import { GRADIENT_COLOR, MODEL_MAP, VIEW_NAMES, VIEWS } from "./components/constants/constanst.js";
-import { useCarContext } from "./components/context/carContext.jsx";
-import TransitionEffect from "./components/shaders/TransitionEffect";
+import { useCarContext } from "./components/context/CarContext.jsx";
 
 const App = () => {
   const [cameraView, setCameraView] = useState("default");
