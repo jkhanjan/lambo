@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
   EffectComposer,
@@ -6,14 +6,14 @@ import {
   ChromaticAberration,
   Vignette,
   Glitch,
-  Noise,
   DepthOfField,
-  HueSaturation,
-  Scanline,
   ToneMapping,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import CursorDistortion from "./CursorDistortion";
+import SpeedBlur from "../shaders/MotionBlur";
+import CustomVignette from "../shaders/CustomVignet";
+import useSpaceHold from "../utils/hooks/useSpaceHold";
 
 const FloatingParticles = () => {
   const pointsRef = useRef();
@@ -24,8 +24,6 @@ const FloatingParticles = () => {
       pointsRef.current.rotation.y += 0.001; 
     }
   });
-
-  // Generate particle positions with a wider range
   const particles = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
     particles[i * 3 + 0] = (Math.random() - 0.5) * 20; 
@@ -68,16 +66,14 @@ const FloatingParticles = () => {
 };
 
 const Effects = ({ environment }) => {
-  return (
+  const { isHolding } = useSpaceHold();
+    return (
     <>
       {/* Postprocessing Effects */}
       {environment === "night" && (
       <>
       <FloatingParticles />
-
-          <EffectComposer>
-
-        {/* Vignette for cinematic focus */}
+        <EffectComposer>
         <Vignette
           eskil={true}
           offset={1.2}
@@ -86,63 +82,81 @@ const Effects = ({ environment }) => {
         />
         <Glitch
           active
-          delay={[4, 6]} // Delay before glitch effect starts
-          duration={[0.1, 0.2]} // Duration of glitch effect
-          strength={[0.3, 0.5]} // Strength of glitch effect
+          delay={[4, 6]} 
+          duration={[0.1, 0.2]} 
+          strength={[0.3, 0.5]}
         />
         <Bloom
           intensity={2}
-          luminanceThreshold={1} // Reacts to dimly lit areas
-          luminanceSmoothing={2} // Smooth bloom transitions
+          luminanceThreshold={1}
+          luminanceSmoothing={2}
           mipmapBlur
-          layers={[1]} // Apply bloom only to layer 1
+          layers={[1]}
         />
         <ChromaticAberration offset={[0.001, 0.002]} />
-        <CursorDistortion strength={0.04} radius={0.2} />
+        <CursorDistortion strength={0.04} radius={0.13} />
+        {isHolding && (
+          <>
+          <SpeedBlur strength={.1} />
+          <CustomVignette offset={.7} darkness={0.8} />
+          </>
+        )}
       </EffectComposer></>
       )}
       {environment === "snow" && (
-            <>
-      <FloatingParticles />
+        <>
+        <FloatingParticles />
 
           <EffectComposer>
-
-        {/* Vignette for cinematic focus */}
-        <Vignette
-          eskil={true}
-          offset={1.2}
-          darkness={1}
-          blendFunction={BlendFunction.NORMAL}
-        />
-        <Glitch
-          active
-          delay={[4, 6]} // Delay before glitch effect starts
-          duration={[0.1, 0.2]} // Duration of glitch effect
-          strength={[0.3, 0.5]} // Strength of glitch effect
-        />
-        <Bloom
-          intensity={2}
-          luminanceThreshold={1} // Reacts to dimly lit areas
-          luminanceSmoothing={2} // Smooth bloom transitions
-          mipmapBlur
-          layers={[1]} // Apply bloom only to layer 1
-        />
-        <ChromaticAberration offset={[0.001, 0.002]} />
-        <CursorDistortion strength={0.04} radius={0.2} />
-
-      </EffectComposer></>
+            <Vignette
+              eskil={true}
+              offset={1.2}
+              darkness={1.}
+              blendFunction={BlendFunction.NORMAL}
+            />
+            <Glitch
+              active
+              delay={[4, 6]}
+              duration={[0.1, 0.2]}
+              strength={[0.3, 0.5]}
+            />
+            <Bloom
+              intensity={2}
+              luminanceThreshold={1}
+              luminanceSmoothing={2} 
+              mipmapBlur
+              layers={[1]}
+            />
+            <ChromaticAberration offset={[0.001, 0.002]} />
+            <CursorDistortion strength={0.04} radius={0.13} />
+              {isHolding && (
+                <>
+                <SpeedBlur strength={.1} />
+                <CustomVignette offset={.7} darkness={0.8} />
+                </>
+              )}
+          </EffectComposer>
+        </>
       )}
+
 
       {environment === "city" && (
-    <EffectComposer>
-      <DepthOfField focusDistance={0.03} focalLength={.5} bokehScale={2.5} />
-      <Bloom intensity={0.8} luminanceThreshold={0.3} luminanceSmoothing={.8} />
-      <ToneMapping adaptive averageLuminance={.5} middleGrey={0.6} />
-      <Vignette offset={0.2} darkness={1.0} />
-        <CursorDistortion strength={0.04} radius={0.2} />
-    </EffectComposer>
+        <EffectComposer>
+          <DepthOfField focusDistance={0.03} focalLength={.5} bokehScale={2.5} />
+          <Bloom intensity={0.8} luminanceThreshold={0.3} luminanceSmoothing={.8} />
+          <ToneMapping adaptive averageLuminance={.5} middleGrey={0.6} />
+          <CursorDistortion strength={0.04} radius={0.13} />
+          <Vignette offset={0.2} darkness={1.0} />
+          {isHolding && (
+                <>
+                <SpeedBlur strength={.1} />
+                <CustomVignette offset={.7} darkness={0.8} />
+                </>
+          )}
+        </EffectComposer>
 
       )}
+      
     </>
   );
 };

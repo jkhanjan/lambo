@@ -147,7 +147,7 @@ export default function BMW(props) {
 
   return (
     <group {...props} dispose={null}>
-      <primitive object={scene} />
+      <primitive object={scene} scale={1.1} />
     </group>
   );
 }

@@ -174,7 +174,7 @@
           </mesh>
         </group>
       )}
-        <primitive object={scene} />
+        <primitive object={scene} scale={1.1} />
       </group>
     );
   }

@@ -12,8 +12,8 @@ const ResponsiveCamera = () => {
       camera.position.set(0, 5, 20);
       camera.fov = 45;
     } else {
-      camera.position.set(0, 5, 25);
-      camera.fov = 30;
+      // camera.position.set(0, 5, 1);
+      camera.fov = 55;
     }
     camera.updateProjectionMatrix();
   }, [camera, size]);

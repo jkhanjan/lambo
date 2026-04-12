@@ -18,6 +18,7 @@ export const MODEL_MAP = {
 };
 export const MODELS_NAME = ["lambo", "porsche", "ferrari", "bmw"];
 
+
 export const VIEW_NAMES = {
   default: "Default View",
   sideView: "Side View",

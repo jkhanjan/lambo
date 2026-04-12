@@ -139,7 +139,7 @@ if (!scene || !paintTexture) return;
         </group>
 
       )}
-      <primitive object={scene} scale={1} />;
+      <primitive object={scene} scale={1.15} />;
     </group>
   )
 };

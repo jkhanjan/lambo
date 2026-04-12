@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useMemo } from "react";
+import React, { useState, Suspense, useMemo, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, OrbitControls, Preload } from "@react-three/drei";
 import "./App.css";
@@ -12,14 +12,10 @@ import Effects from "./components/Effects/Effects.jsx";
 import { Overlay } from "./components/UI/Overlay.jsx";
 import { GRADIENT_COLOR, MODEL_MAP, VIEW_NAMES, VIEWS } from "./components/constants/constanst.js";
 import { useCarContext } from "./components/context/carContext.jsx";
-import TransitionEffect from "./components/shaders/TransitionEffect";
 
 const App = () => {
-  const [cameraView, setCameraView] = useState("default");
-
-const { carState, transitionProgress, isTransitioning } = useCarContext();
-
-
+  const dollyProgressRef = useRef(0);
+  const { carState, isTransitioning } = useCarContext();
   const CurrentModel = useMemo(
     () => MODEL_MAP[carState.modelName],
     [carState.modelName],
@@ -27,40 +23,39 @@ const { carState, transitionProgress, isTransitioning } = useCarContext();
 
 
   return (
-    <div className="app">
-      <Suspense fallback={<Loader />}>
+     <div className="app">
       <Overlay />
-      <div className="button-overlay">
-          </div>
-        <Canvas className="canvas" shadows frameloop="always">
+      <Canvas className="canvas " shadows frameloop="always" >
           <ResponsiveCamera />
+          <Suspense fallback={null}>
           <Studio environment={carState.environment} />
           <CurrentModel
-            color={carState.color}
-            allColors={GRADIENT_COLOR}
-            metalness={carState.metalness}
-            roughness={carState.roughness}
-            parts={carState.parts}
-            accessories={carState.accessories}
-          />
+              color={carState.color}
+              allColors={GRADIENT_COLOR}
+              metalness={carState.metalness}
+              roughness={carState.roughness}
+              parts={carState.parts}
+              accessories={carState.accessories}
+            />
           <Floor environment={carState.environment} />
+          </Suspense>
           <Effects environment={carState.environment} />
-           {/* <TransitionEffect progress={transitionProgress} /> */}
-          <CameraController view={cameraView} isTransitioning={isTransitioning} />
-          <OrbitControls
-            enableZoom
-            enableDamping
-            dampingFactor={0.05}
-            rotateSpeed={0.7}
-            maxDistance={100}
-            minDistance={5}
-            enabled={!isTransitioning}
-          />
-          <Preload all />
-          
+            <CameraController
+              dollyProgressRef={dollyProgressRef}
+            />
+              <OrbitControls
+                enableZoom
+                enableDamping
+                dampingFactor={0.05}
+                rotateSpeed={0.7}
+                maxDistance={100}
+                minDistance={5}
+                enabled={!isTransitioning}
+              />
+            <Preload all />
         </Canvas>
-      </Suspense>
-    </div>
+        <Loader /> 
+      </div>
   );
 };
 
