@@ -10,8 +10,8 @@ import Studio from "./components/Effects/Studio.jsx";
 import Floor from "./components/Effects/Floor.jsx";
 import Effects from "./components/Effects/Effects.jsx";
 import { Overlay } from "./components/UI/Overlay.jsx";
-import { GRADIENT_COLOR, MODEL_MAP, VIEW_NAMES, VIEWS } from "./components/constants/constanst.js";
-import { useCarContext } from "./components/context/carContext.jsx";
+import { GRADIENT_COLOR, MODEL_MAP } from "./components/constants/constanst.js";
+import { useCarContext } from "./components/context/CarContext.jsx";
 
 const App = () => {
   const dollyProgressRef = useRef(0);
