@@ -21,7 +21,6 @@ const App = () => {
     [carState.modelName],
   );
 
-
   return (
      <div className="app">
       <Overlay />
