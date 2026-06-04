@@ -25,7 +25,6 @@ const CameraController = ({
     dollyProgressRef.current = Math.min(Math.max(next, 0), 1);
 
     const t = dollyProgressRef.current;
-    console.log(t)
     // FOV
     const desiredFov = THREE.MathUtils.lerp(baseFov.current, targetFov, t);
     camera.fov = THREE.MathUtils.lerp(camera.fov, desiredFov, 0.2);
