@@ -1,5 +1,4 @@
-// Overlay.jsx
-import { useState, memo, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { EnvironmentPicker } from "./components/EnvironmentPicker";
 import { ColorPicker } from "./components/ColorPicker";
 import { ModelPicker } from "./components/ModelPicker";
@@ -8,101 +7,186 @@ import "./Overlay.css";
 import useSpaceHold from "../utils/hooks/useSpaceHold";
 
 const menuOptions = [
-  { id: "color", label: "Color" },
-  { id: "model", label: "Model" },
+  { id: "color",       label: "Color" },
+  { id: "model",       label: "Model" },
   { id: "environment", label: "Environment" },
   { id: "accessories", label: "Accessories" },
 ];
 
+const ITEM_W = 150;
+const CLONE_COUNT = 2; // clones on each side for infinite feel
+
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
+const DrumDial = ({ activeId, onSelect }) => {
+  const wrapRef    = useRef(null);
+  const trackRef   = useRef(null);
+  const dragging   = useRef(false);
+  const startX     = useRef(0);
+  const startOff   = useRef(0);
+  const currentOff = useRef(null);
+  const didDrag    = useRef(false);
+
+  const n          = menuOptions.length;
+  const activeIdx  = menuOptions.findIndex(o => o.id === activeId);
+
+  // build a virtual infinite list: [...clones_left, real items, ...clones_right]
+  const totalItems = n + CLONE_COUNT * 2 * n;
+  const realStart  = CLONE_COUNT * n;
+
+  function virtualLabel(vi) {
+    return menuOptions[mod(vi - realStart, n)].label;
+  }
+
+  function offsetForVirtual(vi) {
+    const w = wrapRef.current?.offsetWidth ?? 300;
+    return (w / 2) - vi * ITEM_W - ITEM_W / 2;
+  }
+
+  // canonical virtual index for a given real index (centered in the virtual list)
+  function canonicalVirtual(realIdx) {
+    return realStart + realIdx;
+  }
+
+  function setOffset(off, animated) {
+    if (!trackRef.current) return;
+    trackRef.current.style.transition = animated
+      ? "transform 0.28s cubic-bezier(0.25,1,0.5,1)"
+      : "none";
+    trackRef.current.style.transform = `translateX(${off}px)`;
+    currentOff.current = off;
+  }
+
+  // on snap: figure out which virtual slot is closest to center, wrap if needed
+  function snapClosest(fromOffset) {
+    const w       = wrapRef.current?.offsetWidth ?? 300;
+    const center  = w / 2;
+    // virtual index closest to center given current offset
+    const vi      = Math.round((center - fromOffset - ITEM_W / 2) / ITEM_W);
+    const clamped = Math.max(0, Math.min(totalItems - 1, vi));
+    const realIdx = mod(clamped - realStart, n);
+
+    // animate to snapped position
+    const snappedOff = offsetForVirtual(canonicalVirtual(realIdx));
+    setOffset(snappedOff, true);
+
+    onSelect(menuOptions[realIdx].id);
+  }
+
+  // keep track in sync when activeId changes externally (click on item)
+  useEffect(() => {
+    const vi  = canonicalVirtual(activeIdx);
+    const off = offsetForVirtual(vi);
+    setOffset(off, true);
+  }, [activeId]);
+
+  function onPointerDown(e) {
+    dragging.current = true;
+    didDrag.current  = false;
+    startX.current   = e.clientX;
+    startOff.current = currentOff.current ?? offsetForVirtual(canonicalVirtual(activeIdx));
+    wrapRef.current.setPointerCapture(e.pointerId);
+    setOffset(startOff.current, false);
+  }
+
+  function onPointerMove(e) {
+    if (!dragging.current) return;
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 4) didDrag.current = true;
+    setOffset(startOff.current + dx, false);
+  }
+
+  function onPointerUp(e) {
+    if (!dragging.current) return;
+    dragging.current = false;
+    if (!didDrag.current) return; // let click handler deal with it
+    const dx      = e.clientX - startX.current;
+    const finalOff = startOff.current + dx;
+    snapClosest(finalOff);
+  }
+
+  function onItemClick(realIdx) {
+    if (didDrag.current) return; 
+    onSelect(menuOptions[realIdx].id);
+  }
+
+  const virtualItems = Array.from({ length: totalItems }, (_, vi) => {
+    const realIdx = mod(vi - realStart, n);
+    const dist    = Math.abs(mod(vi - realStart, n) - activeIdx);
+    const adjDist = Math.min(dist, n - dist); // wrap-aware distance
+    return { vi, realIdx, label: menuOptions[realIdx].label, adjDist };
+  });
+
+  return (
+    <div
+      ref={wrapRef}
+      className="dial-wrap"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => {
+        dragging.current = false;
+        snapClosest(currentOff.current ?? offsetForVirtual(canonicalVirtual(activeIdx)));
+      }}
+    >
+      <div className="dial-tick" />
+      <div ref={trackRef} className="dial-track">
+        {virtualItems.map(({ vi, realIdx, label, adjDist }) => (
+          <button
+            key={vi}
+            className={`dial-item${adjDist === 0 ? " active" : adjDist === 1 ? " adjacent" : ""}`}
+            onClick={() => onItemClick(realIdx)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const OverlayComponent = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const {isHolding} = useSpaceHold()
+  const [activeMenu, setActiveMenu] = useState(1);
+  const { isHolding } = useSpaceHold();
+
   return (
     <>
-      <button
-        onClick={() => setIsNavOpen((o) => !o)}
-        className="menu-toggle-button fixed top-5 left-6 z-20 p-2 rounded-lg"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-8 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1}
-            d={
-              isNavOpen
-                ? "M6 18L18 6M6 6l12 12"
-                : "M4 6h16M4 12h16M4 18h16"
-            }
-          />
-        </svg>
-      </button>
-        
-      <div
-        className={`
-        fixed left-0 w-full h-[12vh] z-50 top-0
-        bg-gradient-to-b from-black via-black/80 to-transparent
-        backdrop-blur-md
-        transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
-        ${isHolding ? "translate-y-0" : "-translate-y-full"}
-        `}
-      />
+      <div className={`hold-bar hold-bar--top    ${isHolding ? "visible" : ""}`} />
+      <div className={`hold-bar hold-bar--bottom ${isHolding ? "visible" : ""}`} />
 
-      <div
-        className={`
-        fixed left-0 w-full h-[12vh] z-50 bottom-0
-        bg-gradient-to-t from-black via-black/80 to-transparent
-        backdrop-blur-md
-        transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
-        ${isHolding ? "translate-y-0" : "translate-y-full"}
-        `}
-      />
-
-      <p
-        className={`absolute font-serif top-5 left-1/2 -translate-x-1/2 z-10 text-xl tracking-[5px] border rounded-2xl px-6
-        transition-all duration-300 
-        ${
-          isHolding
-            ? "text-cyan-300 scale-105 drop-shadow-[0_0_12px_rgba(8, 84, 236, 0.8)]"
-            : "text-cyan-100 "
-        }`}
-      >
+      <p className={`space-hint ${isHolding ? "space-hint--active" : ""}`}>
         {isHolding ? ">> HOLDING..." : "---HOLD SPACE BAR---"}
       </p>
-      <div
-        className={`nav-menu fixed h-full py-6 px-2 transition-transform duration-300 ease-in-out z-10 ${
-          isNavOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="nav-menu-content mt-16 space-y-4">
-          {menuOptions.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => {
-                setActiveMenu(option.id);
-                setIsNavOpen(false);
-              }}
-              className={`nav-menu-button w-full text-left px-4 py-3 rounded-lg text-white hover:bg-blue-500 transition-colors`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {!isHolding && (
-        <div className="overlay-container">
-        {activeMenu === "environment" && <EnvironmentPicker />}
-        {activeMenu === "color" && <ColorPicker />}
-        {activeMenu === "model" && <ModelPicker />}
-        {activeMenu === "accessories" && <AccessoriesPicker />}
-      </div>
+        <div className="dial-root">
+          {activeMenu && (
+            <div className="dial-popover">
+              <span className="dial-popover__label">
+                {menuOptions.find(o => o.id === activeMenu)?.label}
+              </span>
+              <div className="dial-popover__content">
+                {activeMenu === "color"       && <ColorPicker />}
+                {activeMenu === "model"       && <ModelPicker />}
+                {activeMenu === "environment" && <EnvironmentPicker />}
+                {activeMenu === "accessories" && <AccessoriesPicker />}
+              </div>
+            </div>
+          )}
+
+          <div className="dial-row">
+            <DrumDial activeId={activeMenu ?? "color"} onSelect={setActiveMenu} />
+            <button
+              className={`dial-none-btn ${!activeMenu ? "dial-none-btn--active" : ""}`}
+              onClick={() => setActiveMenu(null)}
+              title="None"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

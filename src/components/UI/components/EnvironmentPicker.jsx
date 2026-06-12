@@ -54,9 +54,6 @@ export function EnvironmentPicker() {
 
   return (
     <div className="environment-control-wrapper">
-      <h3 ref={titleRef} className="text-white text-lg mb-4">
-        Choose Environment
-      </h3>
 
       <div className="environment-options">
         {Object.entries(ENVIRONMENTS).map(([key, env], index) => (
@@ -64,7 +61,7 @@ export function EnvironmentPicker() {
             key={key}
             ref={(el) => (buttonsRef.current[index] = el)}
             onClick={() => setEnvironment(key)}
-            className={`environment-button ${
+            className={`model-button ${
               carState.environment === key ? "active" : ""
             }`}
             onMouseEnter={(e) => {

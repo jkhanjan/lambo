@@ -24,8 +24,8 @@ export function ColorPicker() {
         duration: 0.5,
         ease: "power3.out",
         stagger: {
-          each: 0.1, // 👈 flow speed
-          from: "start", // left → right
+          each: 0.1, 
+          from: "start",
         },
       }
     );
@@ -38,7 +38,7 @@ export function ColorPicker() {
           key={index}
           ref={(el) => (buttonsRef.current[index] = el)}
           onClick={() => setColor(texture)}
-          className="h-[3rem] w-[10rem] relative rounded-md overflow-hidden"
+          className="h-[2rem] w-[7rem] relative rounded-md overflow-hidden"
         >
           <img
             src={texture}
