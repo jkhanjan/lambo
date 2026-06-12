@@ -26,7 +26,7 @@ body,
 @media (max-width: 768px) {
   .canvas {
     width: 100vw;
-    height: 80vh; /* Reduce height for smaller screens */
+    height: 80vh; 
   }
 }
 
