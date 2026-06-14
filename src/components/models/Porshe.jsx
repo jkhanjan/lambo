@@ -153,5 +153,3 @@ export default function Porshe(props) {
 
   return <primitive object={scene} {...props} scale={1.1} />;
 }
-
-useGLTF.preload("/porshe/scene-draco.glb");

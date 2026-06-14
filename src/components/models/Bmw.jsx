@@ -151,5 +151,3 @@ export default function BMW(props) {
     </group>
   );
 }
-
-useGLTF.preload("/bmw/scene-resized.glb");

@@ -178,5 +178,3 @@
       </group>
     );
   }
-
-  useGLTF.preload("/model/scene-draco.glb");
