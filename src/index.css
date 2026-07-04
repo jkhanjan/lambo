@@ -32,6 +32,6 @@ body,
 
 @media (max-width: 480px) {
   .canvas {
-    height: 70vh; /* Further adjust height */
+    height: 70vh;
   }
 }

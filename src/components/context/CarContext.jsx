@@ -33,7 +33,6 @@ useEffect(() => {
       const t = Math.min((now - start) / duration, 1);
       setTransitionProgress(t);
 
-      // Swap model at peak — screen most covered here
       if (t >= 0.5 && !swappedRef.current) {
         swappedRef.current = true;
         dispatch({ type: "SET_MODEL", modelName });
@@ -55,7 +54,7 @@ useEffect(() => {
   }, []);
 
   const actions = {
-    setModel:       (modelName)               => startTransition(modelName),  // ← intercepted
+    setModel:       (modelName)               => startTransition(modelName),  
     setColor:       (color)                   => dispatch({ type: "SET_COLOR", color }),
     setMaterial:    ({ metalness, roughness }) => dispatch({ type: "SET_MATERIAL", metalness, roughness }),
     setEnvironment: (environment)             => dispatch({ type: "SET_ENVIRONMENT", environment }),

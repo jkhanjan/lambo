@@ -88,7 +88,6 @@
   color: black;
 }
 
-/* wraps dial + none button side by side */
 .dial-row {
   width: 100%;
   display: flex;
@@ -96,7 +95,6 @@
   gap: 6px;
 }
 
-/* none button */
 .dial-none-btn {
   flex-shrink: 0;
   width: 32px;
@@ -121,7 +119,6 @@
   color: #b2f5ea;
 }
 
-/* ── drum dial ── */
 .dial-wrap {
   width: 100%;
   height: 50px;
@@ -152,9 +149,9 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 130px;                      /* was 84px — wider to match new item size */
+  width: 130px;                     
   height: 34px;
-  border: 1px solid rgba(255,255,255,0.55);   /* was 0.5px 0.14 — bolder tick box */
+  border: 1px solid rgba(255,255,255,0.55);  
   border-radius: 8px;
   pointer-events: none;
   z-index: 3;
@@ -170,7 +167,7 @@
 }
 
 .dial-item {
-  width: 150px;          /* was 90px */
+  width: 150px;          
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -180,21 +177,20 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-size: 9px;
-  color: rgba(255,255,255,0.55);     /* was 0.2 */
+  color: rgba(255,255,255,0.55);    
   transition: color 200ms ease, font-size 200ms ease;
   pointer-events: none;
 }
 .dial-item.adjacent {
   font-size: 10px;
-  color: rgba(255,255,255,0.65);     /* was 0.4 */
+  color: rgba(255,255,255,0.65);     
 }
 .dial-item.active {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;                    /* was 0.92 */
+  color: #ffffff;                   
 }
 
-/* ── existing picker styles below (unchanged) ── */
 .color-slider {
   position: absolute;
   top: 50%;
