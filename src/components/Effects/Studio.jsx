@@ -33,7 +33,6 @@ const Studio = ({ environment }) => {
 
       {environment === "night" && (
         <>
-          {/* Left Torus */}
           <Torus
             ref={leftTorusRef}
             args={[2.5, 0.01, 30, 50]}

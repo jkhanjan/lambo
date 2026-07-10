@@ -1,7 +1,6 @@
 import { Circle, MeshReflectorMaterial, Reflector } from "@react-three/drei";
 import { extend } from "@react-three/fiber";
 import { ShaderMaterial } from "three";
-// Custom Tron Grid Shader
 class TronGridMaterial extends ShaderMaterial {
   constructor() {
     super({
@@ -41,7 +40,6 @@ const Floor = ({ environment  }) => {
 
   return (
     <group>
-      {/* Reflective base */}
        {environment !== "city" && <Circle args={[1, 16]} receiveShadow scale={15} rotation-x={-Math.PI / 2}>
         <MeshReflectorMaterial
           color={`#a8a8a8`}
