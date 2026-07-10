@@ -21,7 +21,6 @@ const Lambo = (props) => {
 
   const MIX_SPEED = 0.015;
 
-  /* ---------------- Paint texture setup ---------------- */
   useEffect(() => {
     if (!paintTexture) return;
 
@@ -40,7 +39,6 @@ const Lambo = (props) => {
     });
   }, [paintTexture]);
 
-  /* ---------------- Scene traversal ---------------- */
   useEffect(() => {
 if (!scene || !paintTexture) return;
 

@@ -14,7 +14,7 @@ const menuOptions = [
 ];
 
 const ITEM_W = 150;
-const CLONE_COUNT = 2; // clones on each side for infinite feel
+const CLONE_COUNT = 2; 
 
 function mod(n, m) {
   return ((n % m) + m) % m;
@@ -32,7 +32,6 @@ const DrumDial = ({ activeId, onSelect }) => {
   const n          = menuOptions.length;
   const activeIdx  = menuOptions.findIndex(o => o.id === activeId);
 
-  // build a virtual infinite list: [...clones_left, real items, ...clones_right]
   const totalItems = n + CLONE_COUNT * 2 * n;
   const realStart  = CLONE_COUNT * n;
 
@@ -45,7 +44,6 @@ const DrumDial = ({ activeId, onSelect }) => {
     return (w / 2) - vi * ITEM_W - ITEM_W / 2;
   }
 
-  // canonical virtual index for a given real index (centered in the virtual list)
   function canonicalVirtual(realIdx) {
     return realStart + realIdx;
   }
@@ -59,7 +57,6 @@ const DrumDial = ({ activeId, onSelect }) => {
     currentOff.current = off;
   }
 
-  // on snap: figure out which virtual slot is closest to center, wrap if needed
   function snapClosest(fromOffset) {
     const w       = wrapRef.current?.offsetWidth ?? 300;
     const center  = w / 2;
@@ -101,7 +98,7 @@ const DrumDial = ({ activeId, onSelect }) => {
   function onPointerUp(e) {
     if (!dragging.current) return;
     dragging.current = false;
-    if (!didDrag.current) return; // let click handler deal with it
+    if (!didDrag.current) return; 
     const dx      = e.clientX - startX.current;
     const finalOff = startOff.current + dx;
     snapClosest(finalOff);

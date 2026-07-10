@@ -16,7 +16,6 @@ export function AccessoriesPicker() {
   useEffect(() => {
     const tl = gsap.timeline();
 
-    // Title animation
     tl.fromTo(
       titleRef.current,
       {
@@ -31,7 +30,6 @@ export function AccessoriesPicker() {
       }
     );
 
-    // Buttons animation (soft upward flow)
     tl.fromTo(
       buttonsRef.current,
       {
@@ -47,7 +45,7 @@ export function AccessoriesPicker() {
         ease: "power3.out",
         stagger: 0.1,
       },
-      "-=0.2" // overlap with title
+      "-=0.2" 
     );
   }, []);
 

@@ -13,8 +13,6 @@ export function EnvironmentPicker() {
 
   useEffect(() => {
     const tl = gsap.timeline();
-
-    // Title first
     tl.fromTo(
       titleRef.current,
       {
@@ -29,7 +27,6 @@ export function EnvironmentPicker() {
       }
     );
 
-    // Then buttons flow in
     tl.fromTo(
       buttonsRef.current,
       {
@@ -48,7 +45,7 @@ export function EnvironmentPicker() {
           from: "start",
         },
       },
-      "-=0.2" // slight overlap with title
+      "-=0.2" 
     );
   }, []);
 

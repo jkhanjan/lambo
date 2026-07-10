@@ -24,8 +24,8 @@ export function ModelPicker() {
         duration: 0.8,
         ease: "power3.out",
         stagger: {
-          each: 0.1,     // 👈 slightly slower than color picker (feels intentional)
-          from: "start", // left → right
+          each: 0.1, 
+          from: "start", 
         },
       }
     );
