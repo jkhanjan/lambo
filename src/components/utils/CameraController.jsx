@@ -12,8 +12,6 @@ const CameraController = ({
   const {isHoldingRef} = useSpaceHold()
   const baseFov = useRef(35);
   const targetFov = 80;
-
-  // Shake strength
   const shakeStrength = 0.01; 
 
   useFrame(() => {
