@@ -60,19 +60,15 @@ const DrumDial = ({ activeId, onSelect }) => {
   function snapClosest(fromOffset) {
     const w       = wrapRef.current?.offsetWidth ?? 300;
     const center  = w / 2;
-    // virtual index closest to center given current offset
     const vi      = Math.round((center - fromOffset - ITEM_W / 2) / ITEM_W);
     const clamped = Math.max(0, Math.min(totalItems - 1, vi));
     const realIdx = mod(clamped - realStart, n);
 
-    // animate to snapped position
     const snappedOff = offsetForVirtual(canonicalVirtual(realIdx));
     setOffset(snappedOff, true);
 
     onSelect(menuOptions[realIdx].id);
   }
-
-  // keep track in sync when activeId changes externally (click on item)
   useEffect(() => {
     const vi  = canonicalVirtual(activeIdx);
     const off = offsetForVirtual(vi);
