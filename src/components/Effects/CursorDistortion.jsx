@@ -14,8 +14,7 @@ const CursorDistortion = ({ strength, radius}) => {
 
     const x = (pointer.x + 1) / 2;
     const y = (pointer.y + 1) / 2;
-
-    // Calculate how far the mouse moved since the last frame
+    
     const distanceX = Math.abs(x - lastPos.current.x);
     const distanceY = Math.abs(y - lastPos.current.y);
 
