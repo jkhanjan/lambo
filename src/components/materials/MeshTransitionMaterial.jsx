@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber'
 import React, { useRef } from 'react'
-import { easing } from 'maath' // make sure you have this import for the easing functions
+import { easing } from 'maath' 
 
 const MeshTransitionMaterial = (props) => {
     const materialRef = useRef()
