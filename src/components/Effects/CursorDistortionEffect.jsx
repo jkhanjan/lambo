@@ -55,7 +55,6 @@ const fragmentShader = /* glsl */ `
 
 export class CursorDistortionEffect extends Effect {
   constructor({ strength = 0.04, radius = 0.55 } = {}) {
-    // 1. Initialize our history arrays
     const maxPoints = 16;
     const trailPositions = [];
     const trailAges = [];
@@ -79,8 +78,7 @@ export class CursorDistortionEffect extends Effect {
     this.maxPoints = maxPoints;
     this.trailPositions = trailPositions;
     this.trailAges = trailAges;
-    
-    // Keep aspect ratio updated on resize
+
     window.addEventListener("resize", () => {
       this.uniforms.get("uAspect").value = window.innerWidth / window.innerHeight;
     });
