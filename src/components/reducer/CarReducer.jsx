@@ -1,5 +1,4 @@
 import white from "/gray.jpg";
-// carwhiteucer.js
 export const initialCarState = {
   modelName: "lambo",
   color: white,
