@@ -69,7 +69,6 @@ const Effects = ({ environment }) => {
   const { isHolding } = useSpaceHold();
     return (
     <>
-      {/* Postprocessing Effects */}
       {environment === "night" && (
       <>
       <FloatingParticles />

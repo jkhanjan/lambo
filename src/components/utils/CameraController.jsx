@@ -43,7 +43,6 @@ const CameraController = ({
 
     camera.position.lerp(targetPosition, 0.2);
 
-    // 🎬 Cinematic shake
     if (t > 0) {
       const time = clock.getElapsedTime();
 
