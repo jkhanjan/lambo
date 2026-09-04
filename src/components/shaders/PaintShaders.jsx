@@ -127,8 +127,8 @@ const PaintShaderMaterial = shaderMaterial(
 
     /* ========= WORLD SPACE COORDS ========= */
 
-    vec3 wp = vWorldPos * 1.;     // 🔑 global scale knob
-    vec2 paintUV = wp.yz;          // stable on all cars
+    vec3 wp = vWorldPos * 1.;    
+    vec2 paintUV = wp.yz;        
 
     /* ========= TRANSITION ========= */
 
