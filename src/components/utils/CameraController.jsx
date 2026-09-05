@@ -23,12 +23,10 @@ const CameraController = ({
     dollyProgressRef.current = Math.min(Math.max(next, 0), 1);
 
     const t = dollyProgressRef.current;
-    // FOV
     const desiredFov = THREE.MathUtils.lerp(baseFov.current, targetFov, t);
     camera.fov = THREE.MathUtils.lerp(camera.fov, desiredFov, 0.2);
     camera.updateProjectionMatrix();
 
-    // Dolly distance math
     const requiredDistance =
       sceneWidth / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
 
