@@ -19,19 +19,14 @@ const fragmentShader = /* glsl */ `
 
     for(int i = 0; i < MAX_POINTS; i++) {
       float age = uTrailAges[i];
-      
       // If the point is fully faded out (age >= 1.0), skip it to save performance
       if(age >= 1.0) continue; 
-
       vec2 pos = uTrailPositions[i];
-
       vec2 aspectCorrectedPos = pos;
       aspectCorrectedPos.x *= uAspect;
-
       // Distance and Direction
       vec2 delta = aspectCorrectedUV - aspectCorrectedPos;
       float dist = length(delta);
-      
       // Normalize direction (safely avoid dividing by zero)
       vec2 dir = dist > 0.0001 ? delta / dist : vec2(0.0);
 
