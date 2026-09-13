@@ -13,13 +13,12 @@ const fragmentShader = /* glsl */ `
   void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
     vec2 totalDistortion = vec2(0.0);
 
-    // Aspect correct the UVs so ripples are perfect circles, not ovals
     vec2 aspectCorrectedUV = uv;
     aspectCorrectedUV.x *= uAspect;
 
     for(int i = 0; i < MAX_POINTS; i++) {
       float age = uTrailAges[i];
-      // If the point is fully faded out (age >= 1.0), skip it to save performance
+      
       if(age >= 1.0) continue; 
       vec2 pos = uTrailPositions[i];
       vec2 aspectCorrectedPos = pos;
