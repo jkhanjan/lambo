@@ -3,11 +3,12 @@
   import { useFrame } from "@react-three/fiber";
   import * as THREE from "three";
   import PaintShaderMaterial from "../shaders/PaintShaders";
+  import { MODEL_ASSETS } from "../constants/constanst";
 
 
   export default function Ferrari(props) {
     const spoilers = props.parts.spoiler;
-    const { scene } = useGLTF("/model/scene-draco.glb");
+    const { scene } = useGLTF(MODEL_ASSETS.ferrari);
       const { nodes: spoilerNodes, materials: spoilerMaterials } = useGLTF(
     "./spoiler/spoilers/scene.gltf"
   );

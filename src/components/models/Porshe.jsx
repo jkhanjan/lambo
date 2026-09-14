@@ -3,9 +3,10 @@ import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import PaintShaderMaterial from "../shaders/PaintShaders";
+import { MODEL_ASSETS } from "../constants/constanst";
 
 export default function Porshe(props) {
-  const { scene } = useGLTF("/porshe/scene-draco.glb");
+  const { scene } = useGLTF(MODEL_ASSETS.porsche);
 
   /* ---------------- Paint texture ---------------- */
   const allTextures = useTexture(props.allColors);

@@ -18,6 +18,15 @@ export const MODEL_MAP = {
 };
 export const MODELS_NAME = ["lambo", "porsche", "ferrari", "bmw"];
 
+// Single source of truth for each model's GLB path — used by the model
+// components themselves and by the preloader, so they can't drift apart.
+export const MODEL_ASSETS = {
+  lambo: "/model2/scene-draco.glb",
+  ferrari: "/model/scene-draco.glb",
+  porsche: "/porshe/scene-draco.glb",
+  bmw: "/bmw/scene-resized.glb",
+};
+
 
 export const VIEW_NAMES = {
   default: "Default View",

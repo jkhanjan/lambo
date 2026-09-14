@@ -3,10 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import React, { useEffect, useRef } from "react";
 import PaintShaderMaterial from "../shaders/PaintShaders";
+import { MODEL_ASSETS } from "../constants/constanst";
 
 const Lambo = (props) => {
   const spoilers = props.parts.spoiler;
-  const { scene } = useGLTF("/model2/scene-draco.glb");
+  const { scene } = useGLTF(MODEL_ASSETS.lambo);
     const { nodes: spoilerNodes, materials: spoilerMaterials } = useGLTF(
     "./spoiler/spoilers/scene.gltf"
   );

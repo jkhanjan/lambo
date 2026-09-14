@@ -3,9 +3,10 @@ import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import PaintShaderMaterial from "../shaders/PaintShaders";
+import { MODEL_ASSETS } from "../constants/constanst";
 
 export default function BMW(props) {
-  const { scene } = useGLTF("/bmw/scene-resized.glb");
+  const { scene } = useGLTF(MODEL_ASSETS.bmw);
   const allTextures = useTexture(props.allColors);
   const paintTexture = Array.isArray(allTextures)
     ? allTextures[props.allColors.indexOf(props.color)]
