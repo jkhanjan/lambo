@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useRef, useState, useCallback } from "react";
-import { preloadModels } from "../utils/PreloadModels";
 import { carReducer, initialCarState } from "../reducer/CarReducer";
+import { MODEL_ASSETS } from "../constants/constanst";
 import { useGLTF } from "@react-three/drei";
 
 const CarContext = createContext(null);
@@ -14,9 +14,7 @@ export function CarProvider({ children }) {
 
 useEffect(() => {
   const timer = setTimeout(() => {
-    useGLTF.preload("/porsche/scene-draco.glb");
-    useGLTF.preload("/model2/scene-draco.glb");
-    useGLTF.preload("/bmw/scene-resized.glb");
+    Object.values(MODEL_ASSETS).forEach((path) => useGLTF.preload(path));
   }, 3000);
 
   return () => clearTimeout(timer);
