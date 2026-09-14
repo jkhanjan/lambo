@@ -1,15 +1,14 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRef } from "react";
-import useSpaceHold from "./hooks/useSpaceHold";
+import { useSceneRuntime } from "../context/SceneRuntimeContext";
 
 const CameraController = ({
-  dollyProgressRef,
   subjectPosition = new THREE.Vector3(0, 0, 0),
   sceneWidth = 8,
 }) => {
   const { camera, clock } = useThree();
-  const {isHoldingRef} = useSpaceHold()
+  const { isHoldingRef, dollyProgressRef } = useSceneRuntime();
   const baseFov = useRef(35);
   const targetFov = 80;
   const shakeStrength = 0.01; 

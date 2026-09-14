@@ -22,18 +22,6 @@ export const initialCarState = {
 
 export const carReducer = (state, action) => {
   switch (action.type) {
-    case "BATCH_UPDATE":
-      return {
-        ...state,
-        ...action.payload,
-        parts: action.payload.parts
-          ? { ...state.parts, ...action.payload.parts }
-          : state.parts,
-        accessories: action.payload.accessories
-          ? { ...state.accessories, ...action.payload.accessories }
-          : state.accessories,
-      };
-
     case "SET_MODEL":
       return {
         ...state,
@@ -66,33 +54,6 @@ export const carReducer = (state, action) => {
           ...state.parts,
           [action.partName]: !state.parts[action.partName],
         },
-      };
-
-    case "UPDATE_PART":
-      return {
-        ...state,
-        parts: {
-          ...state.parts,
-          [action.partName]: action.value,
-        },
-      };
-
-    case "UPDATE_ACCESSORY":
-      return {
-        ...state,
-        accessories: {
-          ...state.accessories,
-          [action.accessoryName]: action.value,
-        },
-      };
-
-    case "RESET":
-      return initialCarState;
-
-    case "LOAD_CONFIG":
-      return {
-        ...state,
-        ...action.config,
       };
 
     default:

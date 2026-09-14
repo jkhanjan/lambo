@@ -4,7 +4,7 @@ import { ColorPicker } from "./components/ColorPicker";
 import { ModelPicker } from "./components/ModelPicker";
 import { AccessoriesPicker } from "./components/AccessoriesPicker";
 import "./Overlay.css";
-import useSpaceHold from "../utils/hooks/useSpaceHold";
+import { useSceneRuntime } from "../context/SceneRuntimeContext";
 
 const menuOptions = [
   { id: "color",       label: "Color" },
@@ -142,7 +142,7 @@ const DrumDial = ({ activeId, onSelect }) => {
 
 const OverlayComponent = () => {
   const [activeMenu, setActiveMenu] = useState(1);
-  const { isHolding } = useSpaceHold();
+  const { isHolding } = useSceneRuntime();
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { Environment, OrbitControls, Torus } from "@react-three/drei";
+import { Environment, Torus } from "@react-three/drei";
 import { ENVIRONMENTS } from "../constants/constanst";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
@@ -19,17 +19,6 @@ const Studio = ({ environment }) => {
   return (
     <>
       <color attach="background" args={[currentEnv.background]} />
-      <OrbitControls
-        minDistance={6}
-        maxDistance={10}
-        autoRotate
-        autoRotateSpeed={-0.45}
-        target={[0, 0.1, 0]}
-        maxPolarAngle={Math.PI / 2.3}
-        minPolarAngle={Math.PI / 6}
-        enableZoom={false}
-        rotateSpeed={0.5}
-      />
 
       {environment === "night" && (
         <>

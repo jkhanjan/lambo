@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useMemo, useEffect, useRef } from "react";
+import React, { useState, Suspense, useMemo, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, OrbitControls, Preload } from "@react-three/drei";
 import "./App.css";
@@ -14,7 +14,6 @@ import { GRADIENT_COLOR, MODEL_MAP } from "./components/constants/constanst.js";
 import { useCarContext } from "./components/context/CarContext.jsx";
 
 const App = () => {
-  const dollyProgressRef = useRef(0);
   const { carState, isTransitioning } = useCarContext();
   const CurrentModel = useMemo(
     () => MODEL_MAP[carState.modelName],
@@ -39,9 +38,7 @@ const App = () => {
           <Floor environment={carState.environment} />
           </Suspense>
           <Effects environment={carState.environment} />
-            <CameraController
-              dollyProgressRef={dollyProgressRef}
-            />
+            <CameraController />
               <OrbitControls
                 enableZoom
                 enableDamping
@@ -49,6 +46,11 @@ const App = () => {
                 rotateSpeed={0.7}
                 maxDistance={100}
                 minDistance={5}
+                target={[0, 0.1, 0]}
+                maxPolarAngle={Math.PI / 2.3}
+                minPolarAngle={Math.PI / 6}
+                autoRotate
+                autoRotateSpeed={-0.45}
                 enabled={!isTransitioning}
               />
             <Preload all />

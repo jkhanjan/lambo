@@ -13,7 +13,7 @@ import { BlendFunction } from "postprocessing";
 import CursorDistortion from "./CursorDistortion";
 import SpeedBlur from "../shaders/MotionBlur";
 import CustomVignette from "../shaders/CustomVignet";
-import useSpaceHold from "../utils/hooks/useSpaceHold";
+import { useSceneRuntime } from "../context/SceneRuntimeContext";
 
 const FloatingParticles = () => {
   const pointsRef = useRef();
@@ -65,79 +65,51 @@ const FloatingParticles = () => {
   );
 };
 
+// "night" and "snow" used the exact same post stack — pulled out once so
+// it reads as one definition instead of two copies that have to be kept
+// in sync by hand.
+const StandardPostStack = ({ isHolding }) => (
+  <EffectComposer>
+    <Vignette
+      eskil={true}
+      offset={1.2}
+      darkness={1}
+      blendFunction={BlendFunction.NORMAL}
+    />
+    <Glitch
+      active
+      delay={[4, 6]}
+      duration={[0.1, 0.2]}
+      strength={[0.3, 0.5]}
+    />
+    <Bloom
+      intensity={2}
+      luminanceThreshold={1}
+      luminanceSmoothing={2}
+      mipmapBlur
+      layers={[1]}
+    />
+    <ChromaticAberration offset={[0.001, 0.002]} />
+    <CursorDistortion strength={0.04} radius={0.13} />
+    {isHolding && (
+      <>
+        <SpeedBlur strength={.1} />
+        <CustomVignette offset={.7} darkness={0.8} />
+      </>
+    )}
+  </EffectComposer>
+);
+
 const Effects = ({ environment }) => {
-  const { isHolding } = useSpaceHold();
+  const { isHolding } = useSceneRuntime();
     return (
     <>
-      {environment === "night" && (
-      <>
-      <FloatingParticles />
-        <EffectComposer>
-        <Vignette
-          eskil={true}
-          offset={1.2}
-          darkness={1}
-          blendFunction={BlendFunction.NORMAL}
-        />
-        <Glitch
-          active
-          delay={[4, 6]} 
-          duration={[0.1, 0.2]} 
-          strength={[0.3, 0.5]}
-        />
-        <Bloom
-          intensity={2}
-          luminanceThreshold={1}
-          luminanceSmoothing={2}
-          mipmapBlur
-          layers={[1]}
-        />
-        <ChromaticAberration offset={[0.001, 0.002]} />
-        <CursorDistortion strength={0.04} radius={0.13} />
-        {isHolding && (
-          <>
-          <SpeedBlur strength={.1} />
-          <CustomVignette offset={.7} darkness={0.8} />
-          </>
-        )}
-      </EffectComposer></>
-      )}
-      {environment === "snow" && (
+      {(environment === "night" || environment === "snow") && (
         <>
-        <FloatingParticles />
-
-          <EffectComposer>
-            <Vignette
-              eskil={true}
-              offset={1.2}
-              darkness={1.}
-              blendFunction={BlendFunction.NORMAL}
-            />
-            <Glitch
-              active
-              delay={[4, 6]}
-              duration={[0.1, 0.2]}
-              strength={[0.3, 0.5]}
-            />
-            <Bloom
-              intensity={2}
-              luminanceThreshold={1}
-              luminanceSmoothing={2} 
-              mipmapBlur
-              layers={[1]}
-            />
-            <ChromaticAberration offset={[0.001, 0.002]} />
-            <CursorDistortion strength={0.04} radius={0.13} />
-              {isHolding && (
-                <>
-                <SpeedBlur strength={.1} />
-                <CustomVignette offset={.7} darkness={0.8} />
-                </>
-              )}
-          </EffectComposer>
+          <FloatingParticles />
+          <StandardPostStack isHolding={isHolding} />
         </>
       )}
-
 
       {environment === "city" && (
         <EffectComposer>
